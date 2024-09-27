@@ -1,76 +1,77 @@
-import { Component } from '@angular/core';
-import { CalculatorComponent } from "../../components/calculator/calculator.component";
-import { Calculator } from '../../components/calculator/calculator.type';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Calculator, CalculatorComponent, Color, Icon, Operator } from '../../components';
 
 @Component({
   selector: 'app-board',
   standalone: true,
   imports: [CalculatorComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @for (calculator of calculators; track calculator.id) {
-      <section>
-        <app-calculator [data]="calculator"/>
-      </section>
-    }
-  `,
+    <article [style.display]="'flex'">
+      @for (calculator of calculators; track calculator.id) {
+          <app-calculator [data]="calculator"/>
+        }
+    </article>
+    `,
   styles: ``
 })
 export class BoardComponent {
   calculators: Calculator[] = [{
     id: 1,
     name: 'Player 1',
-    element: [{
+    entity: [{
       id: 1,
-      name: 'Life',
-      color: 'red',
-      icon: 'heart',
+      name: 'Vida',
+      color: Color.RED,
+      icon: Icon.HEART,
       resultDefault: 100,
-      resultActual: 100,
+      resultCurrent: 100,
       customOperations: []
     }]
   },
   {
     id: 2,
     name: 'Player 2',
-    element: [{
+    entity: [{
       id: 1,
-      name: 'Life',
-      color: 'red',
-      icon: 'heart',
+      name: 'Vida',
+      color: Color.RED,
+      icon: new Blob(),
       resultDefault: 100,
-      resultActual: 100,
+      resultCurrent: 100,
       customOperations: []
     },
     {
       id: 2,
       name: 'Mana',
-      color: 'blue',
+      color: Color.BLUE,
       resultDefault: 50,
-      resultActual: 50,
+      resultCurrent: 50,
       customOperations: []
     }]
   },
   {
     id: 3,
     name: 'Player 3',
-    element: [{
+    entity: [{
       id: 1,
-      name: 'Life',
-      color: 'red',
-      icon: 'heart',
+      name: 'Vida',
+      color: Color.RED,
+      icon: new Blob(),
       resultDefault: 100,
-      resultActual: 100,
+      resultCurrent: 100,
       customOperations: [
         {
-          operator: '+',
+          operator: Operator.SUM,
           numberToApply: 500,
-          color: 'green',
+          color: Color.GREEN,
         },
         {
-          operator: '-',
+          operator: Operator.SUBTRACTION,
           numberToApply: 500,
-          color: 'red',
-        }]
+          color: Color.RED,
+        }
+      ]
     }]
   }]
 }

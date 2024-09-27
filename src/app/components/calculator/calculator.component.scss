@@ -1,0 +1,28 @@
+.calculator {
+    margin: 2rem 1rem;
+    padding: 1rem 1rem;
+    border: 0.2rem solid red;
+
+    .header {}
+
+    .elements {
+        margin: 0.5rem 0.5rem;
+
+        .info {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .name {}
+
+        .result {}
+    }
+
+    .operation {}
+
+    .keys {
+        .calculator-key {}
+
+        .custom-key {}
+    }
+}
