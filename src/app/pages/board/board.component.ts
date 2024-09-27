@@ -62,7 +62,7 @@ export class BoardComponent {
       resultCurrent: 100,
       customOperations: [
         {
-          operator: Operator.SUM,
+          operator: Operator.ADDITION,
           numberToApply: 500,
           color: Color.GREEN,
         },
@@ -72,6 +72,25 @@ export class BoardComponent {
           color: Color.RED,
         }
       ]
-    }]
+    },
+      {
+        id: 2,
+        name: 'Mana',
+        color: Color.BLUE,
+        resultDefault: 50,
+        resultCurrent: 50,
+        customOperations: [
+          {
+            operator: Operator.ADDITION,
+            numberToApply: 25,
+            color: Color.GREEN,
+          },
+          {
+            operator: Operator.SUBTRACTION,
+            numberToApply: 25,
+            color: Color.RED,
+          }
+        ]
+      }]
   }]
 }

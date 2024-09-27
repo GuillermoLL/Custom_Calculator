@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { Calculator, Entity, Operation, Operator } from './calculator.type';
+import { Calculator, Entity, Operator } from './calculator.type';
 
 @Component({
   selector: 'app-calculator',
@@ -25,7 +25,7 @@ import { Calculator, Entity, Operation, Operator } from './calculator.type';
             <!-- ************************************ -->
             <div class="elements">
               @for (entity of calculator.entity; track entity.id) {
-                <div class="info">
+                <div class="info" (click)="handleClickEntity(entity.id)">
                   <!-- <img> -->
                   <span class="name" [style.color]="entity.color">{{ entity.name }}</span>
                   <div class="result">
@@ -49,14 +49,26 @@ import { Calculator, Entity, Operation, Operator } from './calculator.type';
               <!-- ************************************ -->
               <div class="keys">
                 <!-- Default calculators keys -->
-                <div class="calculator-key"></div>
+                <div class="calculator-key-group">
+                  <p>9</p>
+                  <p>8</p>
+                  <p>7</p>
+                  <p>6</p>
+                  <p>5</p>
+                  <p>4</p>
+                  <p>3</p>
+                  <p>2</p>
+                  <p>1</p>
+                </div>
 
                 <!-- Customs keys -->
-                  @for (customOperation of entitySelected.customOperations; track $index) {
-                    <p class="custom-key" [style.color]="customOperation.color">
-                      {{ customOperation.operator }} {{ customOperation.numberToApply }}
-                    </p>
-                  }
+                 <div class="custom-key-group">
+                   @for (customOperation of entitySelected.customOperations; track $index) {
+                     <p class="custom-key" [style.color]="customOperation.color" (click)="handleClickCustomOperation(customOperation.operator,  customOperation.numberToApply)">
+                       {{ customOperation.operator }} {{ customOperation.numberToApply }}
+                     </p>
+                   }
+                 </div>
               </div>
             }
           </div>
@@ -77,5 +89,42 @@ export class CalculatorComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  handleClickEntity(idEntity: number) {
+    this.entitySelected = this.data().entity.find(elm => elm.id === idEntity);
+  }
+
+  handleClickNumber(numberToApply: number) {
+    this.numberToApply = numberToApply;
+  }
+
+  handleClickOperator(operator: Operator) {
+    this.operatorSelected = operator;
+  }
+
+  handleClickCustomOperation(operator: Operator, numberToApply: number) {
+    this.applyOperation(operator, numberToApply);
+  }
+
+  applyOperation(operator: Operator, numberToApply: number) {
+    if (this.entitySelected) {
+      const operation = {
+        [Operator.ADDITION]: (num1: number, num2: number) => num1 + num2,
+        [Operator.SUBTRACTION]: (num1: number, num2: number) => num1 - num2,
+        [Operator.MULTIPLICATION]: (num1: number, num2: number) => num1 * num2,
+        [Operator.DIVISION]: (num1: number, num2: number) => num1 / num2
+      }
+
+      const result = operation[operator](this.entitySelected.resultCurrent, numberToApply);
+
+      // Ensures the result does not exceed the limits of the default result
+      if (result >= 0)
+        this.entitySelected.resultCurrent =
+          result < this.entitySelected.resultDefault ? result : this.entitySelected.resultDefault;
+      else
+        this.entitySelected.resultCurrent =
+          result > 0 ? result : 0;
+    }
   }
 }

@@ -5,7 +5,7 @@ export enum Icon {
 }
 
 export enum Operator {
-    SUM = '+',
+    ADDITION = '+',
     SUBTRACTION = '-',
     MULTIPLICATION = '*',
     DIVISION = '/',
@@ -42,4 +42,4 @@ export type Operation = {
     operator: Operator
     numberToApply: number
     color: Color
-}
+}   
