@@ -7,9 +7,9 @@ import { Calculator, CalculatorComponent, Color, Icon, Operator } from '../../co
   imports: [CalculatorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="d-flex">
+    <article class="container row">
       @for (calculator of calculators; track calculator.id) {
-          <app-calculator [data]="calculator"/>
+          <app-calculator [data]="calculator" class="col"/>
         }
     </article>
     `,
@@ -48,6 +48,14 @@ export class BoardComponent {
       resultDefault: 50,
       resultCurrent: 50,
       customOperations: []
+      },
+      {
+        id: 2,
+        name: 'Mana',
+        color: Color.BLUE,
+        resultDefault: 50,
+        resultCurrent: 50,
+        customOperations: []
     }]
   },
   {

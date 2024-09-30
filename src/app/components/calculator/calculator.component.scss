@@ -1,34 +1,17 @@
 .calculator {
     margin: 2rem 1rem;
     padding: 1rem 1rem;
-    border: 0.2rem solid red;
+}
 
-    .header {}
 
-    .elements {
-        margin: 0.5rem 0.5rem;
+.keys {
+    text-align: center;
 
-        .info {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .name {}
-
-        .result {}
-    }
-
-    .operation {}
-
-    .keys {
-        text-align: center;
-        
-            .calculator-key-group,
-            .custom-key-group {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                grid-column-gap: 0px;
-                grid-row-gap: 0px;
-            }
+    .calculator-key-group,
+    .custom-key-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
     }
 }
