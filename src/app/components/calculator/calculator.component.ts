@@ -19,7 +19,6 @@ import { Calculator, Entity, Operator } from './calculator.type';
 
           <!-- Calculator Body -->
           <div class="body">
-
             <!-- ************************************ -->
             <!-- * Entity to operate ************** -->
             <!-- ************************************ -->
@@ -64,7 +63,9 @@ import { Calculator, Entity, Operator } from './calculator.type';
                 <!-- Customs keys -->
                  <div class="custom-key-group">
                    @for (customOperation of entitySelected.customOperations; track $index) {
-                     <p class="custom-key" [style.color]="customOperation.color" (click)="handleClickCustomOperation(customOperation.operator,  customOperation.numberToApply)">
+                     <p class="custom-key"
+                      [style.color]="customOperation.color"
+                      (click)="handleClickCustomOperation(customOperation.operator,  customOperation.numberToApply)">
                        {{ customOperation.operator }} {{ customOperation.numberToApply }}
                      </p>
                    }

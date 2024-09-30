@@ -7,7 +7,7 @@ import { Calculator, CalculatorComponent, Color, Icon, Operator } from '../../co
   imports: [CalculatorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article [style.display]="'flex'">
+    <article class="d-flex">
       @for (calculator of calculators; track calculator.id) {
           <app-calculator [data]="calculator"/>
         }
