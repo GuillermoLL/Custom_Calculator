@@ -7,8 +7,14 @@ export enum Icon {
 export enum Operator {
     ADDITION = '+',
     SUBTRACTION = '-',
-    MULTIPLICATION = '*',
+    MULTIPLICATION = 'x',
     DIVISION = '/',
+}
+
+export enum OtherOperator {
+    CORRECT = 'C',
+    DELETE = 'Del',
+    EQUAL = '='
 }
 
 export enum Color {

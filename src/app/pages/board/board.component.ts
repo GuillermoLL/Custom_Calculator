@@ -50,7 +50,7 @@ export class BoardComponent {
       customOperations: []
       },
       {
-        id: 2,
+        id: 3,
         name: 'Mana',
         color: Color.BLUE,
         resultDefault: 50,
