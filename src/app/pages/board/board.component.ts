@@ -7,10 +7,16 @@ import { Calculator, CalculatorComponent, Color, Icon, Operator } from '../../co
   imports: [CalculatorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="container row">
-      @for (calculator of calculators; track calculator.id) {
-          <app-calculator [data]="calculator" class="col"/>
-        }
+    <aside class="">
+      <button type="button" class="btn btn-primary rounded-0"> <i class="bi bi-plus-lg"></i></button>
+    </aside>
+    <aside class="">
+      <button type="button" class="btn btn-primary rounded-0"> <i class="bi bi-gear"></i></button>
+    </aside>
+    <article class="row container">
+        @for (calculator of calculators; track calculator.id) {
+            <app-calculator [data]="calculator" class="col"/>
+          }
     </article>
     `,
   styles: ``
@@ -26,37 +32,53 @@ export class BoardComponent {
       icon: Icon.HEART,
       resultDefault: 100,
       resultCurrent: 100,
+      numberOverflow: false,
+      numberDecimals: false,
+      clearOperationWhenOperate: false,
       customOperations: []
     }]
   },
   {
     id: 2,
     name: 'Player 2',
-    entity: [{
-      id: 1,
-      name: 'Vida',
-      color: Color.RED,
-      icon: new Blob(),
-      resultDefault: 100,
-      resultCurrent: 100,
-      customOperations: []
-    },
-    {
-      id: 2,
-      name: 'Mana',
-      color: Color.BLUE,
-      resultDefault: 50,
-      resultCurrent: 50,
-      customOperations: []
+    entity: [
+      {
+        id: 1,
+        name: 'Vida',
+        color: Color.RED,
+        icon: Icon.HEART,
+        resultDefault: 100,
+        resultCurrent: 100,
+        numberOverflow: true,
+        numberDecimals: false,
+        clearOperationWhenOperate: false,
+        customOperations: []
       },
       {
         id: 3,
         name: 'Mana',
         color: Color.BLUE,
+        icon: Icon.SPARKLE,
         resultDefault: 50,
         resultCurrent: 50,
+        numberOverflow: true,
+        numberDecimals: true,
+        clearOperationWhenOperate: false,
         customOperations: []
-    }]
+      },
+      {
+        id: 2,
+        name: 'Desconocido',
+        color: Color.GREY,
+        icon: Icon.UNKNOWN,
+        resultDefault: 10,
+        resultCurrent: 10,
+        numberOverflow: true,
+        numberDecimals: true,
+        clearOperationWhenOperate: true,
+        customOperations: []
+      }
+    ]
   },
   {
     id: 3,
@@ -65,9 +87,12 @@ export class BoardComponent {
       id: 1,
       name: 'Vida',
       color: Color.RED,
-      icon: new Blob(),
+      icon: Icon.HEART,
       resultDefault: 100,
       resultCurrent: 100,
+      numberOverflow: false,
+      numberDecimals: false,
+      clearOperationWhenOperate: true,
       customOperations: [
         {
           operator: Operator.ADDITION,
@@ -83,10 +108,14 @@ export class BoardComponent {
     },
       {
         id: 2,
-        name: 'Mana',
-        color: Color.BLUE,
+        name: 'Oscuridad',
+        color: Color.PURPLE,
+        icon: Icon.MOON,
         resultDefault: 50,
         resultCurrent: 50,
+        numberOverflow: false,
+        numberDecimals: false,
+        clearOperationWhenOperate: true,
         customOperations: [
           {
             operator: Operator.ADDITION,
@@ -97,6 +126,16 @@ export class BoardComponent {
             operator: Operator.SUBTRACTION,
             numberToApply: 25,
             color: Color.RED,
+          },
+          {
+            operator: Operator.MULTIPLICATION,
+            numberToApply: 2,
+            color: Color.PURPLE,
+          },
+          {
+            operator: Operator.DIVISION,
+            numberToApply: 2,
+            color: Color.ORANGE,
           }
         ]
       }]

@@ -38,8 +38,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
             (click)="handleClickEntity(entity.id)"
           >
             <div class="d-flex gap-3">
-              <!-- // TODO cambiar el i por el icono correspondiente -->
-              <i class="bi bi-droplet" [style.color]="entity.color"></i>
+              <i [class]="['bi', 'bi-' + entity.icon]" [style.color]="entity.color"></i>
               <span [style.color]="entity.color">{{ entity.name }}</span>
             </div>
             <div>
@@ -68,7 +67,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
         <!-- ************************************ -->
         <!-- * Keys ***************************** -->
         <!-- ************************************ -->
-        <div class="keys">
+        <div class="keys text-center">
           <!-- Default calculators keys -->
             <!-- // TODO hacer esto con for para mejor escalavilidad -->
           <div class="calculator-key-group">
@@ -249,15 +248,18 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
           </div>
           <!-- Customs keys -->
-          <div class="custom-key-group">
+          <div class="custom-key-group mt-2">
             @for (customOperation of entitySelected.customOperations; track
             $index) {
-            <p class="custom-key"
-              [style.color]="customOperation.color"
+            <button
+              type="button"
+              class=" btn btn-primary custom-key"
+              [style.background-color]="customOperation.color"
+              [style.border-color]="customOperation.color"
               (click)="handleClickCustomOperation(customOperation.operator, customOperation.numberToApply)"
             >
               {{ customOperation.operator }} {{ customOperation.numberToApply }}
-            </p>
+            </button>
             }
           </div>
         </div>
@@ -274,8 +276,9 @@ export class CalculatorComponent {
   operatorSelected?: Operator;
   numberToApply?: string;
 
-  // TODO Crear el boton para cambiar esta variable
   numberOverflow: boolean = false;
+  numberDecimals: boolean = false;
+  clearOperationWhenOperate: boolean = true;
 
   get getOperator() {
     return {
@@ -286,6 +289,11 @@ export class CalculatorComponent {
 
   handleClickEntity(idEntity: number) {
     this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity);
+    if (this.entitySelected) {
+      this.numberOverflow = this.entitySelected.numberOverflow;
+      this.numberDecimals = this.entitySelected.numberDecimals;
+      this.clearOperationWhenOperate = this.entitySelected.clearOperationWhenOperate;
+    }
   }
 
   handleClickNumber(numberToApply: string) {
@@ -299,8 +307,8 @@ export class CalculatorComponent {
 
   handleClickRareOperator(operator: OtherOperator) {
     const operation = {
-      [this.getOperator.CORRECT]: () => (this.numberToApply = this.numberToApply?.slice(0, -1)),
-      [this.getOperator.DELETE]: () => (this.numberToApply = ''),
+      [this.getOperator.CORRECT]: () => this.numberToApply = this.numberToApply?.slice(0, -1),
+      [this.getOperator.DELETE]: () => this.numberToApply = '',
       [this.getOperator.EQUAL]: () => this.applyOperation(this.operatorSelected!, +this.numberToApply!),
     };
     operation[operator]();
@@ -311,32 +319,45 @@ export class CalculatorComponent {
   }
 
   private applyOperation(operator: Operator, numberToApply: number) {
-    if (this.entitySelected) {
-      const operation = {
-        [Operator.ADDITION]: (num1: number, num2: number) => num1 + num2,
-        [Operator.SUBTRACTION]: (num1: number, num2: number) => num1 - num2,
-        [Operator.MULTIPLICATION]: (num1: number, num2: number) => num1 * num2,
-        [Operator.DIVISION]: (num1: number, num2: number) => num1 / num2,
-      };
+    const operation = {
+      [Operator.ADDITION]: (num1: number, num2: number) => num1 + num2,
+      [Operator.SUBTRACTION]: (num1: number, num2: number) => num1 - num2,
+      [Operator.MULTIPLICATION]: (num1: number, num2: number) => num1 * num2,
+      [Operator.DIVISION]: (num1: number, num2: number) => num1 / num2,
+    };
 
-      const result = operation[operator](this.entitySelected.resultCurrent, numberToApply);
+    let result = operation[operator](this.entitySelected!.resultCurrent, numberToApply);
 
-      if (!this.numberOverflow) {
-        // Ensures the result does not exceed the limits of the default result
-        if (result >= 0)
-          this.entitySelected.resultCurrent =
-            result < this.entitySelected.resultDefault
-              ? result
-              : this.entitySelected.resultDefault;
-        else 
-          this.entitySelected.resultCurrent = result > 0 ? result : 0;
-      }
-      else {
-        this.entitySelected.resultCurrent = result
-      }
-
-      this.numberToApply = undefined;
-      this.operatorSelected = undefined;
+    // Ensures the result does not use decimals
+    if (!this.numberDecimals) {
+      result = Math.round(result);
     }
+    else {
+      // If the result does decimals, round to 2 decimals
+      result = Math.round((result + Number.EPSILON) * 100) / 100
+    }
+
+    // Ensures the result does not exceed the limits of the default result
+    if (!this.numberOverflow) {
+      if (result >= 0)
+        result =
+          result < this.entitySelected!.resultDefault
+            ? result
+            : this.entitySelected!.resultDefault;
+      else 
+        result = result > 0 ? result : 0;
+    }
+
+    this.entitySelected!.resultCurrent = result;
+
+    // Reset operation
+    if (this.clearOperationWhenOperate) {
+      this.resetOperation();
+    }
+  }
+
+  resetOperation() {
+    this.numberToApply = undefined;
+    this.operatorSelected = undefined;
   }
 }

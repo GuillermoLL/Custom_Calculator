@@ -1,7 +1,9 @@
 export enum Icon {
-    HEART = 'heart',
-    THUNDER = 'thunder',
-    SPARKLE = 'sparkle',
+    HEART = 'droplet',
+    THUNDER = 'lightning-charge',
+    SPARKLE = 'brightness-high',
+    MOON = 'moon',
+    UNKNOWN = 'question-lg'
 }
 
 export enum Operator {
@@ -24,6 +26,7 @@ export enum Color {
     ORANGE = '#a85b32',
     GREEN = '#36a832',
     PURPLE = '#8732a8',
+    GREY = '#808080',
     WHITE = '#ffffff',
     BLACK = '#292b2e',
 }
@@ -37,10 +40,13 @@ export type Calculator = {
 export type Entity = {
     id: number
     name: string
-    icon?: Icon | Blob | string
+    icon?: Icon
     color: Color
     resultDefault: number
     resultCurrent: number
+    numberOverflow: boolean
+    numberDecimals: boolean
+    clearOperationWhenOperate: boolean
     customOperations: Operation[]
 }
 

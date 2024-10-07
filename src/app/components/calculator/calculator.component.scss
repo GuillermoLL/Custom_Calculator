@@ -5,16 +5,15 @@
 
 
 .keys {
-    text-align: center;
-
     .calculator-key-group,
     .custom-key-group {
-        display: grid;
+    display: grid;
         grid-template-columns: repeat(5, 1fr);
         grid-column-gap: 0px;
         grid-row-gap: 0px;
+    
         .equal {
-                grid-column: span 2 / span 2;
+            grid-column: span 2 / span 2;
             }
-                }
+        }
 }
