@@ -56,7 +56,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
         <!-- * Operation ************************ -->
         <!-- ************************************ -->
         <div
-          class="col-auto form-control d-flex justify-content-end gap-2 my-2"
+          class="col-auto form-control d-flex justify-content-end gap-2 mt-3"
           [style.border-color]="entitySelected.color"
         >
           <i> {{ entitySelected.resultCurrent }}</i>
@@ -67,201 +67,104 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
         <!-- ************************************ -->
         <!-- * Keys ***************************** -->
         <!-- ************************************ -->
-        <div class="keys text-center">
-          <!-- Default calculators keys -->
-            <!-- // TODO hacer esto con for para mejor escalavilidad -->
+        <div class="text-center mt-2">
+          <div class="row justify-content-between">
+            <!-- Correctors -->
+            <div class="btn-group col-md mb-2">
+              <button
+                type="button"
+                class=" btn btn-primary"
+                [style.background-color]="entitySelected.color"
+                [style.border-color]="entitySelected.color"
+                (click)="handleClickRareOperator(getOperator.RELOAD)"
+              >
+                <i [class]="['bi',  'bi-'+ getOperator.RELOAD]"></i>
+              </button>
+              <button
+                type="button"
+                class=" btn btn-primary"
+                [style.background-color]="entitySelected.color"
+                [style.border-color]="entitySelected.color"
+                (click)="handleClickRareOperator(getOperator.BEFORE)"
+              >
+                <i [class]="['bi',  'bi-'+ getOperator.BEFORE]"></i>
+              </button>
+              <button
+                type="button"
+                class=" btn btn-primary"
+                [style.background-color]="entitySelected.color"
+                [style.border-color]="entitySelected.color"
+                (click)="handleClickRareOperator(getOperator.DELETE)"
+              >
+                <!-- <i [class]="['bi',  'bi-'+ getOperator.DELETE]"></i> -->
+                {{ getOperator.DELETE }}
+              </button>
+              <button
+                type="button"
+                class=" btn btn-primary"
+                [style.background-color]="entitySelected.color"
+                [style.border-color]="entitySelected.color"
+                (click)="handleClickRareOperator(getOperator.CORRECT)"
+              >
+                <i [class]="['bi',  'bi-'+ getOperator.CORRECT]"></i>
+              </button>
+            </div>
+            <!-- Operators -->
+            <div class="btn-group col-md mb-2">
+                @for(operator of operators; track $index){
+                  <button
+                    type="button"
+                    class=" btn btn-primary"
+                    [style.background-color]="entitySelected.color"
+                    [style.border-color]="entitySelected.color"
+                    (click)="handleClickOperator(operator)"
+                  >
+                  {{ operator }}
+                </button>
+              }
+            </div>
+          </div>
+          <!-- Numbers -->
           <div class="calculator-key-group">
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('9')"
-            >
-              9
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('8')"
-            >
-              8
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('7')"
-            >
-              7
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickRareOperator(getOperator.CORRECT)"
-            >
-              {{ getOperator.CORRECT }}
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickRareOperator(getOperator.DELETE)"
-            >
-              {{ getOperator.DELETE }}
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('6')"
-            >
-              6
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('5')"
-            >
-              5
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('4')"
-            >
-              4
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickOperator(getOperator.ADDITION)"
-            >
-              {{ getOperator.ADDITION }}
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickOperator(getOperator.SUBTRACTION)"
-            >
-              {{ getOperator.SUBTRACTION }}
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('3')"
-            >
-              3
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('2')"
-            >
-              2
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('1')"
-            >
-              1
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickOperator(getOperator.MULTIPLICATION)"
-            >
-              {{ getOperator.MULTIPLICATION }}
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickOperator(getOperator.DIVISION)"
-            >
-              {{ getOperator.DIVISION }}
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('0')"
-            >
-              0
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('00')"
-            >
-              00
-            </button>
-            <button
-              type="button"
-              class=" btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              (click)="handleClickNumber('000')"
-            >
-              000
-            </button>
-            <button
-              type="button"
-              class="equal btn btn-primary"
-              [style.background-color]="entitySelected.color"
-              [style.border-color]="entitySelected.color"
-              [disabled]="!this.operatorSelected || !this.numberToApply"
-              (click)="handleClickRareOperator(getOperator.EQUAL)"
-            >
-              {{ getOperator.EQUAL }}
-            </button>
-          </div>
-          <div class="operator-keys-group">
-
-          </div>
-          <!-- Customs keys -->
-          <div class="custom-key-group mt-2">
-            @for (customOperation of entitySelected.customOperations; track
-            $index) {
-            <button
-              type="button"
-              class=" btn btn-primary custom-key"
-              [style.background-color]="customOperation.color"
-              [style.border-color]="customOperation.color"
-              (click)="handleClickCustomOperation(customOperation.operator, customOperation.numberToApply)"
-            >
-              {{ customOperation.operator }} {{ customOperation.numberToApply }}
-            </button>
+            @for(number of numbers; track $index){
+              <button
+                type="button"
+                class=" btn btn-primary rounded-0"
+                [style.background-color]="entitySelected.color"
+                [style.border-color]="entitySelected.color"
+                (click)="handleClickNumber(number.toString())"
+              >
+              {{ number }}
+              </button>
             }
           </div>
+          <!-- Equal -->
+          <button
+            type="button"
+            class=" btn btn-primary mt-2 w-100"
+            [style.background-color]="entitySelected.color"
+            [style.border-color]="entitySelected.color"
+            [disabled]="!this.operatorSelected || !this.numberToApply"
+            (click)="handleClickRareOperator(getOperator.EQUAL)"
+          >
+          {{ getOperator.EQUAL }}
+          </button>
+          <!-- Customs keys -->
+          @if(entitySelected.customOperations.length){
+            <div class="custom-key-group mt-3">
+              @for (customOperation of entitySelected.customOperations; track $index) {
+              <button
+                type="button"
+                class=" btn btn-primary custom-key"
+                [style.background-color]="customOperation.color"
+                [style.border-color]="customOperation.color"
+                (click)="handleClickCustomOperation(customOperation.operator, customOperation.numberToApply)"
+              >
+                {{ customOperation.operator }} {{ customOperation.numberToApply }}
+              </button>
+              }
+            </div>
+          }
         </div>
         }
       </div>
@@ -270,15 +173,23 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   `,
 })
 export class CalculatorComponent {
-  data = input.required<Calculator>();
 
+  // Calculator data 
+  data = input.required<Calculator>();
+  numbers: (number | string)[] = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0, '00', '000'];
+  operators: (Operator)[] = [Operator.ADDITION, Operator.SUBTRACTION, Operator.MULTIPLICATION, Operator.DIVISION];
+
+  // Operation data
   entitySelected?: Entity;
   operatorSelected?: Operator;
   numberToApply?: string;
+  numberBeforeOperate?: number;
 
+  // Calculator Configuration
   numberOverflow: boolean = false;
   numberDecimals: boolean = false;
   clearOperationWhenOperate: boolean = true;
+  clearOperationWhenSelectOperator: boolean = false;
 
   get getOperator() {
     return {
@@ -290,9 +201,13 @@ export class CalculatorComponent {
   handleClickEntity(idEntity: number) {
     this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity);
     if (this.entitySelected) {
-      this.numberOverflow = this.entitySelected.numberOverflow;
-      this.numberDecimals = this.entitySelected.numberDecimals;
-      this.clearOperationWhenOperate = this.entitySelected.clearOperationWhenOperate;
+      this.numberBeforeOperate = this.entitySelected.resultCurrent * 1;
+      if (this.entitySelected.options) {
+        this.numberOverflow = this.entitySelected.options.numberOverflow;
+        this.numberDecimals = this.entitySelected.options.numberDecimals;
+        this.clearOperationWhenOperate = this.entitySelected.options.clearOperationWhenOperate;
+        this.clearOperationWhenSelectOperator = this.entitySelected.options.clearOperationWhenSelectOperator;
+      }
     }
   }
 
@@ -302,6 +217,7 @@ export class CalculatorComponent {
   }
 
   handleClickOperator(operator: Operator) {
+    if (this.clearOperationWhenSelectOperator) this.resetOperation();
     this.operatorSelected = operator;
   }
 
@@ -310,6 +226,13 @@ export class CalculatorComponent {
       [this.getOperator.CORRECT]: () => this.numberToApply = this.numberToApply?.slice(0, -1),
       [this.getOperator.DELETE]: () => this.numberToApply = '',
       [this.getOperator.EQUAL]: () => this.applyOperation(this.operatorSelected!, +this.numberToApply!),
+      [this.getOperator.BEFORE]: () => this.entitySelected!.resultCurrent = this.numberBeforeOperate! * 1,
+      [this.getOperator.RELOAD]: () => {
+        if (this.entitySelected) {
+          this.entitySelected.resultCurrent = this.entitySelected?.resultDefault;
+          this.resetOperation();
+        }
+      }
     };
     operation[operator]();
   }
@@ -326,6 +249,7 @@ export class CalculatorComponent {
       [Operator.DIVISION]: (num1: number, num2: number) => num1 / num2,
     };
 
+    this.numberBeforeOperate = this.entitySelected!.resultCurrent * 1;
     let result = operation[operator](this.entitySelected!.resultCurrent, numberToApply);
 
     // Ensures the result does not use decimals

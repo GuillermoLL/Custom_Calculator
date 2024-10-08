@@ -32,9 +32,12 @@ export class BoardComponent {
       icon: Icon.HEART,
       resultDefault: 100,
       resultCurrent: 100,
-      numberOverflow: false,
-      numberDecimals: false,
-      clearOperationWhenOperate: false,
+      options: {
+        numberOverflow: false,
+        numberDecimals: false,
+        clearOperationWhenOperate: false,
+        clearOperationWhenSelectOperator: true
+      },
       customOperations: []
     }]
   },
@@ -49,9 +52,12 @@ export class BoardComponent {
         icon: Icon.HEART,
         resultDefault: 100,
         resultCurrent: 100,
-        numberOverflow: true,
-        numberDecimals: false,
-        clearOperationWhenOperate: false,
+        options: {
+          numberOverflow: true,
+          numberDecimals: false,
+          clearOperationWhenOperate: false,
+          clearOperationWhenSelectOperator: false
+        },
         customOperations: []
       },
       {
@@ -61,9 +67,12 @@ export class BoardComponent {
         icon: Icon.SPARKLE,
         resultDefault: 50,
         resultCurrent: 50,
-        numberOverflow: true,
-        numberDecimals: true,
-        clearOperationWhenOperate: false,
+        options: {
+          numberOverflow: true,
+          numberDecimals: true,
+          clearOperationWhenOperate: false,
+          clearOperationWhenSelectOperator: false
+        },
         customOperations: []
       },
       {
@@ -73,9 +82,12 @@ export class BoardComponent {
         icon: Icon.UNKNOWN,
         resultDefault: 10,
         resultCurrent: 10,
-        numberOverflow: true,
-        numberDecimals: true,
-        clearOperationWhenOperate: true,
+        options: {
+          numberOverflow: true,
+          numberDecimals: true,
+          clearOperationWhenOperate: false,
+          clearOperationWhenSelectOperator: false
+        },
         customOperations: []
       }
     ]
@@ -90,9 +102,12 @@ export class BoardComponent {
       icon: Icon.HEART,
       resultDefault: 100,
       resultCurrent: 100,
-      numberOverflow: false,
-      numberDecimals: false,
-      clearOperationWhenOperate: true,
+      options: {
+        numberOverflow: false,
+        numberDecimals: false,
+        clearOperationWhenOperate: true,
+        clearOperationWhenSelectOperator: false
+      },
       customOperations: [
         {
           operator: Operator.ADDITION,
@@ -113,10 +128,23 @@ export class BoardComponent {
         icon: Icon.MOON,
         resultDefault: 50,
         resultCurrent: 50,
-        numberOverflow: false,
-        numberDecimals: false,
-        clearOperationWhenOperate: true,
+        options: {
+          numberOverflow: false,
+          numberDecimals: false,
+          clearOperationWhenOperate: true,
+          clearOperationWhenSelectOperator: false
+        },
         customOperations: [
+          {
+            operator: Operator.ADDITION,
+            numberToApply: 1,
+            color: Color.GREY,
+          },
+          {
+            operator: Operator.MULTIPLICATION,
+            numberToApply: 2,
+            color: Color.BLUE,
+          },
           {
             operator: Operator.ADDITION,
             numberToApply: 25,

@@ -3,17 +3,16 @@
     padding: 1rem 1rem;
 }
 
-
-.keys {
-    .calculator-key-group,
-    .custom-key-group {
+.calculator-key-group {
     display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        grid-column-gap: 0px;
-        grid-row-gap: 0px;
-    
-        .equal {
-            grid-column: span 2 / span 2;
-            }
-        }
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+}
+
+.custom-key-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+        grid-column-gap: 2px;
+        grid-row-gap: 2px;
 }

@@ -14,9 +14,11 @@ export enum Operator {
 }
 
 export enum OtherOperator {
-    CORRECT = 'C',
+    CORRECT = 'backspace',
     DELETE = 'Del',
-    EQUAL = '='
+    EQUAL = '=',
+    RELOAD = 'arrow-counterclockwise',
+    BEFORE = 'arrow-90deg-left'
 }
 
 export enum Color {
@@ -44,9 +46,7 @@ export type Entity = {
     color: Color
     resultDefault: number
     resultCurrent: number
-    numberOverflow: boolean
-    numberDecimals: boolean
-    clearOperationWhenOperate: boolean
+    options: Options
     customOperations: Operation[]
 }
 
@@ -54,4 +54,11 @@ export type Operation = {
     operator: Operator
     numberToApply: number
     color: Color
-}   
+}
+
+export type Options = {
+    numberOverflow: boolean
+    numberDecimals: boolean
+    clearOperationWhenOperate: boolean
+    clearOperationWhenSelectOperator: boolean
+}
