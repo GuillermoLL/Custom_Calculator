@@ -6,6 +6,18 @@ export enum Icon {
     UNKNOWN = 'question-lg'
 }
 
+export enum Color {
+    RED = '#a83232',
+    BLUE = '#324ea8',
+    YELLOW = '#c0c23a',
+    ORANGE = '#a85b32',
+    GREEN = '#36a832',
+    PURPLE = '#8732a8',
+    GREY = '#808080',
+    WHITE = '#ffffff',
+    BLACK = '#292b2e',
+}
+
 export enum Operator {
     ADDITION = '+',
     SUBTRACTION = '-',
@@ -19,18 +31,6 @@ export enum OtherOperator {
     EQUAL = '=',
     RELOAD = 'arrow-counterclockwise',
     BEFORE = 'arrow-90deg-left'
-}
-
-export enum Color {
-    RED = '#a83232',
-    BLUE = '#324ea8',
-    YELLOW = '#c0c23a',
-    ORANGE = '#a85b32',
-    GREEN = '#36a832',
-    PURPLE = '#8732a8',
-    GREY = '#808080',
-    WHITE = '#ffffff',
-    BLACK = '#292b2e',
 }
 
 export type Calculator = {
@@ -50,12 +50,6 @@ export type Entity = {
     customOperations: Operation[]
 }
 
-export type Operation = {
-    operator: Operator
-    numberToApply: number
-    color: Color
-}
-
 export type Options = {
     [key: string]: boolean
     numberOverflow: boolean
@@ -63,3 +57,10 @@ export type Options = {
     clearOperationWhenOperate: boolean
     clearOperationWhenSelectOperator: boolean
 }
+
+export type Operation = {
+    operator: Operator
+    numberToApply: number
+    color: Color
+}
+

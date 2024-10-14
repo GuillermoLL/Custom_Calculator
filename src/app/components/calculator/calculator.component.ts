@@ -259,16 +259,16 @@ export class CalculatorComponent {
     this.numberBeforeOperate = this.entitySelected!.resultCurrent * 1;
     let result = operation[operator](this.entitySelected!.resultCurrent, numberToApply);
 
-    this.applyOptions(result);
+    this.applyResultsOptions(result);
   }
 
-  private applyOptions(result: number) {
-    // Ensures the result dont use decimals
-    if (!this.options.numberDecimals) 
-      result = Math.round(result);
-    else
-      // If the result does decimals, round to 2 decimals
+  private applyResultsOptions(result: number) {
+    // If the result does decimals, round to 2 decimals
+    if (this.options.numberDecimals)
       result = Math.round((result + Number.EPSILON) * 100) / 100
+    else
+  // Ensures the result dont use decimals
+      result = Math.round(result);
 
     // Ensures the result doesnt exceed the limits of the default result
     if (!this.options.numberOverflow) {
