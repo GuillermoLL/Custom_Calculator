@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { Calculator, Entity, OtherOperator, Operator } from './calculator.type';
+import { Calculator, Entity, OtherOperator, Operator, Options } from './calculator.type';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -76,37 +76,37 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
                 class=" btn btn-primary"
                 [style.background-color]="entitySelected.color"
                 [style.border-color]="entitySelected.color"
-                (click)="handleClickRareOperator(getOperator.RELOAD)"
+                (click)="handleClickRareOperator(this.getOperator.RELOAD)"
               >
-                <i [class]="['bi',  'bi-'+ getOperator.RELOAD]"></i>
+                <i [class]="['bi',  'bi-'+ this.getOperator.RELOAD]"></i>
               </button>
               <button
                 type="button"
                 class=" btn btn-primary"
                 [style.background-color]="entitySelected.color"
                 [style.border-color]="entitySelected.color"
-                (click)="handleClickRareOperator(getOperator.BEFORE)"
+                (click)="handleClickRareOperator(this.getOperator.BEFORE)"
               >
-                <i [class]="['bi',  'bi-'+ getOperator.BEFORE]"></i>
+                <i [class]="['bi',  'bi-'+ this.getOperator.BEFORE]"></i>
               </button>
               <button
                 type="button"
                 class=" btn btn-primary"
                 [style.background-color]="entitySelected.color"
                 [style.border-color]="entitySelected.color"
-                (click)="handleClickRareOperator(getOperator.DELETE)"
+                (click)="handleClickRareOperator(this.getOperator.DELETE)"
               >
                 <!-- <i [class]="['bi',  'bi-'+ getOperator.DELETE]"></i> -->
-                {{ getOperator.DELETE }}
+                {{ this.getOperator.DELETE }}
               </button>
               <button
                 type="button"
                 class=" btn btn-primary"
                 [style.background-color]="entitySelected.color"
                 [style.border-color]="entitySelected.color"
-                (click)="handleClickRareOperator(getOperator.CORRECT)"
+                (click)="handleClickRareOperator(this.getOperator.CORRECT)"
               >
-                <i [class]="['bi',  'bi-'+ getOperator.CORRECT]"></i>
+                <i [class]="['bi',  'bi-'+ this.getOperator.CORRECT]"></i>
               </button>
             </div>
             <!-- Operators -->
@@ -145,9 +145,9 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
             [style.background-color]="entitySelected.color"
             [style.border-color]="entitySelected.color"
             [disabled]="!this.operatorSelected || !this.numberToApply"
-            (click)="handleClickRareOperator(getOperator.EQUAL)"
+            (click)="handleClickRareOperator(this.getOperator.EQUAL)"
           >
-          {{ getOperator.EQUAL }}
+          {{ this.getOperator.EQUAL }}
           </button>
           <!-- Customs keys -->
           @if(entitySelected.customOperations.length){
@@ -177,7 +177,7 @@ export class CalculatorComponent {
   // Calculator data 
   data = input.required<Calculator>();
   numbers: (number | string)[] = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0, '00', '000'];
-  operators: (Operator)[] = [Operator.ADDITION, Operator.SUBTRACTION, Operator.MULTIPLICATION, Operator.DIVISION];
+  operators: Operator[] = [Operator.ADDITION, Operator.SUBTRACTION, Operator.MULTIPLICATION, Operator.DIVISION];
 
   // Operation data
   entitySelected?: Entity;
@@ -186,10 +186,12 @@ export class CalculatorComponent {
   numberBeforeOperate?: number;
 
   // Calculator Configuration
-  numberOverflow: boolean = false;
-  numberDecimals: boolean = false;
-  clearOperationWhenOperate: boolean = true;
-  clearOperationWhenSelectOperator: boolean = false;
+  options: Options = {
+    numberOverflow: false,
+    numberDecimals: false,
+    clearOperationWhenOperate: true,
+    clearOperationWhenSelectOperator: false,
+  }
 
   get getOperator() {
     return {
@@ -198,15 +200,15 @@ export class CalculatorComponent {
     };
   }
 
+  // **********************************************
+  // Handles events
+  // **********************************************
   handleClickEntity(idEntity: number) {
     this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity);
     if (this.entitySelected) {
       this.numberBeforeOperate = this.entitySelected.resultCurrent * 1;
-      if (this.entitySelected.options) {
-        this.numberOverflow = this.entitySelected.options.numberOverflow;
-        this.numberDecimals = this.entitySelected.options.numberDecimals;
-        this.clearOperationWhenOperate = this.entitySelected.options.clearOperationWhenOperate;
-        this.clearOperationWhenSelectOperator = this.entitySelected.options.clearOperationWhenSelectOperator;
+      for (const option in this.entitySelected.options) {
+        this.options[option] = this.entitySelected.options[option];
       }
     }
   }
@@ -217,13 +219,15 @@ export class CalculatorComponent {
   }
 
   handleClickOperator(operator: Operator) {
-    if (this.clearOperationWhenSelectOperator) this.resetOperation();
+    if (this.options.clearOperationWhenSelectOperator)
+      this.resetOperation();
     this.operatorSelected = operator;
   }
 
   handleClickRareOperator(operator: OtherOperator) {
     const operation = {
-      [this.getOperator.CORRECT]: () => this.numberToApply = this.numberToApply?.slice(0, -1),
+      [this.getOperator.CORRECT]: () =>
+        this.numberToApply ? this.numberToApply = this.numberToApply?.slice(0, -1) : this.operatorSelected = undefined,
       [this.getOperator.DELETE]: () => this.numberToApply = '',
       [this.getOperator.EQUAL]: () => this.applyOperation(this.operatorSelected!, +this.numberToApply!),
       [this.getOperator.BEFORE]: () => this.entitySelected!.resultCurrent = this.numberBeforeOperate! * 1,
@@ -241,28 +245,33 @@ export class CalculatorComponent {
     this.applyOperation(operator, numberToApply);
   }
 
+  // **********************************************
+  // Operations funtions
+  // **********************************************
   private applyOperation(operator: Operator, numberToApply: number) {
     const operation = {
-      [Operator.ADDITION]: (num1: number, num2: number) => num1 + num2,
-      [Operator.SUBTRACTION]: (num1: number, num2: number) => num1 - num2,
-      [Operator.MULTIPLICATION]: (num1: number, num2: number) => num1 * num2,
-      [Operator.DIVISION]: (num1: number, num2: number) => num1 / num2,
+      [this.getOperator.ADDITION]: (num1: number, num2: number) => num1 + num2,
+      [this.getOperator.SUBTRACTION]: (num1: number, num2: number) => num1 - num2,
+      [this.getOperator.MULTIPLICATION]: (num1: number, num2: number) => num1 * num2,
+      [this.getOperator.DIVISION]: (num1: number, num2: number) => num1 / num2,
     };
 
     this.numberBeforeOperate = this.entitySelected!.resultCurrent * 1;
     let result = operation[operator](this.entitySelected!.resultCurrent, numberToApply);
 
-    // Ensures the result does not use decimals
-    if (!this.numberDecimals) {
+    this.applyOptions(result);
+  }
+
+  private applyOptions(result: number) {
+    // Ensures the result dont use decimals
+    if (!this.options.numberDecimals) 
       result = Math.round(result);
-    }
-    else {
+    else
       // If the result does decimals, round to 2 decimals
       result = Math.round((result + Number.EPSILON) * 100) / 100
-    }
 
-    // Ensures the result does not exceed the limits of the default result
-    if (!this.numberOverflow) {
+    // Ensures the result doesnt exceed the limits of the default result
+    if (!this.options.numberOverflow) {
       if (result >= 0)
         result =
           result < this.entitySelected!.resultDefault
@@ -272,15 +281,16 @@ export class CalculatorComponent {
         result = result > 0 ? result : 0;
     }
 
-    this.entitySelected!.resultCurrent = result;
-
     // Reset operation
-    if (this.clearOperationWhenOperate) {
+    if (this.options.clearOperationWhenOperate) {
       this.resetOperation();
     }
+
+    this.entitySelected!.resultCurrent = result;
   }
 
-  resetOperation() {
+
+  private resetOperation() {
     this.numberToApply = undefined;
     this.operatorSelected = undefined;
   }

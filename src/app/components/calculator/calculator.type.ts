@@ -57,6 +57,7 @@ export type Operation = {
 }
 
 export type Options = {
+    [key: string]: boolean
     numberOverflow: boolean
     numberDecimals: boolean
     clearOperationWhenOperate: boolean
