@@ -1,27 +1,31 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Calculator, CalculatorComponent, Color, Icon, Operator } from '../../components';
+import { AddCalculatorFormComponent } from "../../components/add-calculator-form/add-calculator-form.component";
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CalculatorComponent],
+  imports: [CalculatorComponent, AddCalculatorFormComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <aside class="">
-      <button type="button" class="btn btn-primary rounded-0"> <i class="bi bi-plus-lg"></i></button>
-    </aside>
-    <aside class="">
-      <button type="button" class="btn btn-primary rounded-0"> <i class="bi bi-gear"></i></button>
-    </aside>
-    <article class="row container">
-        @for (calculator of calculators; track calculator.id) {
-            <app-calculator [data]="calculator" class="col"/>
-          }
+    <header class="d-flex justify-content-md-end justify-content-center gap-2 sticky-top mx-3 mt-3 mb-0 ">
+      <button type="button" class="btn btn-primary px-4 py-2 px-md-3 py-md-1"
+        data-bs-toggle="modal" [attr.data-bs-target]="'#' + this.addModalId"
+        > <i class="bi bi-plus-lg"></i></button>
+      <button type="button" class="btn btn-primary px-4 py-2 px-md-3 py-md-1"> <i class="bi bi-gear"></i></button>
+    </header>
+    <article class="row me-0">
+      @for (calculator of calculators; track calculator.id) {
+          <app-calculator [data]="calculator" class="col"/>
+        }
     </article>
-    `,
+    <app-add-calculator-form [modalId]="this.addModalId" [editMode]='false'></app-add-calculator-form>
+  `,
   styles: ``
 })
 export class BoardComponent {
+  addModalId = 'addModalId';
+
   calculators: Calculator[] = [{
     id: 1,
     name: 'Player 1',

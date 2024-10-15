@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, Component, input, } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
 import { Calculator, Entity, OtherOperator, Operator, Options } from './calculator.type';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { CustomModalComponent } from "../../shared/custom-modal/custom-modal.component";
+import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculator-form.component";
 
 @Component({
   selector: 'app-calculator',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage, NgbDropdownModule],
+  imports: [NgbDropdownModule, CustomModalComponent, AddCalculatorFormComponent],
   styleUrl: './calculator.component.scss',
   template: `
     @let calculator = data(); @if (calculator) {
@@ -16,13 +17,14 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
       <!-- Calculator Header ****************** -->
       <!-- ************************************ -->
       <div class="input-group">
-        <select class="form-select rounded-bottom-0">
-          <option [value]="calculator.id">{{ calculator.name }}</option>
-          <option [value]="3">3</option>
-          <option [value]="2">2</option>
-        </select>
-        <button class="btn btn-outline-primary rounded-bottom-0" type="button">
-          <i class="bi bi-three-dots-vertical"></i>
+        <label class="form-control rounded-bottom-0">{{ calculator.name }}</label>
+        <button class="btn btn-outline-primary border rounded-bottom-0" type="button"
+          data-bs-toggle="modal" [attr.data-bs-target]="'#' + this.editModalId">
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-outline-danger border rounded-bottom-0" type="button"
+          data-bs-toggle="modal" [attr.data-bs-target]="'#' + this.deleteModalId">
+          <i class="bi bi-x-lg"></i>
         </button>
       </div>
 
@@ -30,9 +32,8 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
         <!-- ************************************ -->
         <!-- * Entity to operate ************** -->
         <!-- ************************************ -->
-        <ul class="list-group list-group-flush  border-top-0 mx-2">
+        <ul class="list-group list-group-flush  border-top-0 mx-2 overflow-y-auto">
           @for (entity of calculator.entity; track entity.id) {
-          <!-- Calculator Body -->
           <li
             class="list-group-item d-flex justify-content-between"
             (click)="handleClickEntity(entity.id)"
@@ -50,6 +51,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
           </li>
           }
         </ul>
+
 
         @if( entitySelected ){
         <!-- ************************************ -->
@@ -169,10 +171,12 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
         }
       </div>
     </div>
-    }
-  `,
+    <!-- // TODO las cabeceras de los popups no estan bien -->
+    <app-add-calculator-form [modalId]="this.editModalId" [editMode]='true' [data]="this.data()"></app-add-calculator-form>
+    <app-custom-modal [modalId]="this.deleteModalId" [headerText]="this.deleteModalHeaderText"></app-custom-modal>
+  }`,
 })
-export class CalculatorComponent {
+export class CalculatorComponent implements OnInit {
 
   // Calculator data 
   data = input.required<Calculator>();
@@ -191,7 +195,12 @@ export class CalculatorComponent {
     numberDecimals: false,
     clearOperationWhenOperate: true,
     clearOperationWhenSelectOperator: false,
-  }
+  };
+
+  // Modals config
+  editModalId: string = 'editModalId';
+  deleteModalId: string = 'deleteModalId';
+  deleteModalHeaderText: string = '';
 
   get getOperator() {
     return {
@@ -200,10 +209,15 @@ export class CalculatorComponent {
     };
   }
 
+  ngOnInit(): void {
+    this.inicializateDeleteModalInfo();
+  }
+
   // **********************************************
   // Handles events
   // **********************************************
-  handleClickEntity(idEntity: number) {
+
+  handleClickEntity(idEntity: number): void {
     this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity);
     if (this.entitySelected) {
       this.numberBeforeOperate = this.entitySelected.resultCurrent * 1;
@@ -213,18 +227,22 @@ export class CalculatorComponent {
     }
   }
 
-  handleClickNumber(numberToApply: string) {
-    if (this.numberToApply) this.numberToApply += numberToApply;
+  handleClickNumber(numberToApply: string): void {
+    if (this.numberToApply) {
+      // TODO poner siempre los 0 a la derecha
+      if (numberToApply === '0' || numberToApply === '00' || numberToApply === '000')
+        this.numberToApply += numberToApply;
+    }
     else this.numberToApply = numberToApply;
   }
 
-  handleClickOperator(operator: Operator) {
+  handleClickOperator(operator: Operator): void {
     if (this.options.clearOperationWhenSelectOperator)
       this.resetOperation();
     this.operatorSelected = operator;
   }
 
-  handleClickRareOperator(operator: OtherOperator) {
+  handleClickRareOperator(operator: OtherOperator): void {
     const operation = {
       [this.getOperator.CORRECT]: () =>
         this.numberToApply ? this.numberToApply = this.numberToApply?.slice(0, -1) : this.operatorSelected = undefined,
@@ -241,14 +259,14 @@ export class CalculatorComponent {
     operation[operator]();
   }
 
-  handleClickCustomOperation(operator: Operator, numberToApply: number) {
+  handleClickCustomOperation(operator: Operator, numberToApply: number): void {
     this.applyOperation(operator, numberToApply);
   }
 
   // **********************************************
   // Operations funtions
   // **********************************************
-  private applyOperation(operator: Operator, numberToApply: number) {
+  private applyOperation(operator: Operator, numberToApply: number): void {
     const operation = {
       [this.getOperator.ADDITION]: (num1: number, num2: number) => num1 + num2,
       [this.getOperator.SUBTRACTION]: (num1: number, num2: number) => num1 - num2,
@@ -262,7 +280,7 @@ export class CalculatorComponent {
     this.applyResultsOptions(result);
   }
 
-  private applyResultsOptions(result: number) {
+  private applyResultsOptions(result: number): void {
     // If the result does decimals, round to 2 decimals
     if (this.options.numberDecimals)
       result = Math.round((result + Number.EPSILON) * 100) / 100
@@ -290,8 +308,16 @@ export class CalculatorComponent {
   }
 
 
-  private resetOperation() {
+  private resetOperation(): void {
     this.numberToApply = undefined;
     this.operatorSelected = undefined;
   }
+
+  // **********************************************
+  // Modal
+  // **********************************************
+  private inicializateDeleteModalInfo(): void {
+    this.deleteModalHeaderText = `Eliminar ${this.data().id} - ${this.data().name}`
+  }
+
 }
