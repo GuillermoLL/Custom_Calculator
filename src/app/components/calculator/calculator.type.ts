@@ -56,6 +56,10 @@ export type Options = {
     numberDecimals: boolean
     clearOperationWhenOperate: boolean
     clearOperationWhenSelectOperator: boolean
+    clearOperationWhenSelectEntity: boolean
+    digitLimit: boolean
+    // Valor digitLimit -> depende clearOperationWhenSelectEntity 
+    // Pero valor clearOperationWhenSelectEntity !-> NO depende digitLimit 
 }
 
 export type Operation = {

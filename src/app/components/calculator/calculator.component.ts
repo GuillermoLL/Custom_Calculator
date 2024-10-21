@@ -171,7 +171,6 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
         }
       </div>
     </div>
-    <!-- // TODO las cabeceras de los popups no estan bien -->
     <app-add-calculator-form [modalId]="this.editModalId" [editMode]='true' [data]="this.data()"></app-add-calculator-form>
     <app-custom-modal [modalId]="this.deleteModalId" [headerText]="this.deleteModalHeaderText"></app-custom-modal>
   }`,
@@ -195,6 +194,8 @@ export class CalculatorComponent implements OnInit {
     numberDecimals: false,
     clearOperationWhenOperate: true,
     clearOperationWhenSelectOperator: false,
+    digitLimit: false,
+    clearOperationWhenSelectEntity: false
   };
 
   // Modals config
@@ -218,27 +219,52 @@ export class CalculatorComponent implements OnInit {
   // **********************************************
 
   handleClickEntity(idEntity: number): void {
-    this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity);
+    // New entitySelected
+    this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity)
+
     if (this.entitySelected) {
       this.numberBeforeOperate = this.entitySelected.resultCurrent * 1;
       for (const option in this.entitySelected.options) {
         this.options[option] = this.entitySelected.options[option];
       }
+
+      // Makes sure the option is correct
+      if (this.entitySelected.options.digitLimit)
+        this.options.clearOperationWhenSelectEntity = true;
+
+      // _Option clearOperationWhenSelectEntity
+      this.options.clearOperationWhenSelectEntity ? this.numberToApply = '' : '';
     }
   }
 
-  handleClickNumber(numberToApply: string): void {
+  handleClickNumber(num: string): void {
+    // _Option digitLimit
+    // If have reached the character limit, dont add more numbers.
+    let resultCurrentLength = this.entitySelected?.resultCurrent! > 0 
+      ? this.entitySelected?.resultCurrent.toString().length
+      : this.entitySelected?.resultCurrent.toString().slice(1).length; // Prevents the length change when resultCurrent is negative
+    
+    if (this.options.digitLimit 
+      && resultCurrentLength! < num.length + this.numberToApply!.length
+    ) return;
+    
+
     if (this.numberToApply) {
-      // TODO poner siempre los 0 a la derecha
-      if (numberToApply === '0' || numberToApply === '00' || numberToApply === '000')
-        this.numberToApply += numberToApply;
+      // Set '0's ever in right
+      let numbers = this.numberToApply.slice(0, this.numberToApply.indexOf('0'));
+      let ceros = this.numberToApply.slice(this.numberToApply.indexOf('0'));
+      num.match(/^0+$/) ? ceros += num : numbers += num;
+
+      this.numberToApply = numbers + ceros;
     }
-    else this.numberToApply = numberToApply;
+    else this.numberToApply = num;
   }
 
   handleClickOperator(operator: Operator): void {
+    // _Option clearOperationWhenSelectOperator
     if (this.options.clearOperationWhenSelectOperator)
       this.resetOperation();
+
     this.operatorSelected = operator;
   }
 
@@ -281,13 +307,15 @@ export class CalculatorComponent implements OnInit {
   }
 
   private applyResultsOptions(result: number): void {
+    // _Option numberDecimals
     // If the result does decimals, round to 2 decimals
     if (this.options.numberDecimals)
       result = Math.round((result + Number.EPSILON) * 100) / 100
     else
-  // Ensures the result dont use decimals
+    // Ensures the result dont use decimals
       result = Math.round(result);
 
+    // _Option numberOverflow 
     // Ensures the result doesnt exceed the limits of the default result
     if (!this.options.numberOverflow) {
       if (result >= 0)
@@ -299,7 +327,7 @@ export class CalculatorComponent implements OnInit {
         result = result > 0 ? result : 0;
     }
 
-    // Reset operation
+    // _Option clearOperationWhenOperate
     if (this.options.clearOperationWhenOperate) {
       this.resetOperation();
     }
@@ -309,13 +337,15 @@ export class CalculatorComponent implements OnInit {
 
 
   private resetOperation(): void {
-    this.numberToApply = undefined;
+    this.numberToApply = '';
     this.operatorSelected = undefined;
   }
 
   // **********************************************
   // Modal
   // **********************************************
+ 
+  // TODO las cabeceras de los popups no estan bien
   private inicializateDeleteModalInfo(): void {
     this.deleteModalHeaderText = `Eliminar ${this.data().id} - ${this.data().name}`
   }

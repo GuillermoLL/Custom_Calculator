@@ -40,7 +40,9 @@ export class BoardComponent {
         numberOverflow: false,
         numberDecimals: false,
         clearOperationWhenOperate: false,
-        clearOperationWhenSelectOperator: true
+        clearOperationWhenSelectOperator: true,
+        digitLimit: true,
+        clearOperationWhenSelectEntity: true
       },
       customOperations: []
     }]
@@ -60,7 +62,9 @@ export class BoardComponent {
           numberOverflow: true,
           numberDecimals: false,
           clearOperationWhenOperate: false,
-          clearOperationWhenSelectOperator: false
+          clearOperationWhenSelectOperator: false,
+          digitLimit: true,
+          clearOperationWhenSelectEntity: false
         },
         customOperations: []
       },
@@ -75,7 +79,9 @@ export class BoardComponent {
           numberOverflow: true,
           numberDecimals: true,
           clearOperationWhenOperate: false,
-          clearOperationWhenSelectOperator: false
+          clearOperationWhenSelectOperator: false,
+          digitLimit: false,
+          clearOperationWhenSelectEntity: false
         },
         customOperations: []
       },
@@ -89,8 +95,10 @@ export class BoardComponent {
         options: {
           numberOverflow: true,
           numberDecimals: true,
-          clearOperationWhenOperate: false,
-          clearOperationWhenSelectOperator: false
+          clearOperationWhenOperate: true,
+          clearOperationWhenSelectOperator: false,
+          digitLimit: true,
+          clearOperationWhenSelectEntity: true
         },
         customOperations: []
       }
@@ -110,7 +118,9 @@ export class BoardComponent {
         numberOverflow: false,
         numberDecimals: false,
         clearOperationWhenOperate: true,
-        clearOperationWhenSelectOperator: false
+        clearOperationWhenSelectOperator: false,
+        digitLimit: true,
+        clearOperationWhenSelectEntity: true
       },
       customOperations: [
         {
@@ -136,7 +146,9 @@ export class BoardComponent {
           numberOverflow: false,
           numberDecimals: false,
           clearOperationWhenOperate: true,
-          clearOperationWhenSelectOperator: false
+          clearOperationWhenSelectOperator: false,
+          digitLimit: true,
+          clearOperationWhenSelectEntity: true
         },
         customOperations: [
           {
