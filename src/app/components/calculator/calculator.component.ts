@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
 import { Calculator, Entity, OtherOperator, Operator, Options } from './calculator.type';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { CustomModalComponent } from "../../shared/custom-modal/custom-modal.component";
@@ -11,7 +11,11 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
   imports: [NgbDropdownModule, CustomModalComponent, AddCalculatorFormComponent],
   styleUrl: './calculator.component.scss',
   template: `
-    @let calculator = data(); @if (calculator) {
+    @let calculator = data();
+    @let editModalId = 'editModalId' + calculator.id;
+    @let deleteModalId = 'deleteModalId' + calculator.id;
+
+    @if (calculator) {
     <div class="calculator">
       <!-- ************************************ -->
       <!-- Calculator Header ****************** -->
@@ -19,11 +23,11 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
       <div class="input-group">
         <label class="form-control rounded-bottom-0">{{ calculator.name }}</label>
         <button class="btn btn-outline-primary border rounded-bottom-0" type="button"
-          data-bs-toggle="modal" [attr.data-bs-target]="'#' + this.editModalId">
+          data-bs-toggle="modal" [attr.data-bs-target]="'#' + editModalId">
           <i class="bi bi-pencil"></i>
         </button>
         <button class="btn btn-outline-danger border rounded-bottom-0" type="button"
-          data-bs-toggle="modal" [attr.data-bs-target]="'#' + this.deleteModalId">
+          data-bs-toggle="modal" [attr.data-bs-target]="'#' + deleteModalId">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -171,11 +175,20 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
         }
       </div>
     </div>
-    <app-add-calculator-form [modalId]="this.editModalId" [editMode]='true' [data]="this.data()"></app-add-calculator-form>
-    <app-custom-modal [modalId]="this.deleteModalId" [headerText]="this.deleteModalHeaderText"></app-custom-modal>
+    <app-add-calculator-form [modalId]="editModalId"
+      [data]="calculator"
+      [editMode]='true'
+      (editEventEmiter)="this.handleEditEventEmiter($event)"
+    ></app-add-calculator-form>
+    <app-custom-modal  [modalId]="deleteModalId"
+      [headerText]="'Eliminar ' + calculator.name"
+      [headerTextClass]="'text-danger'"
+      [acceptButtonClass]="'btn-danger'"
+      (acceptEvent)="this.handleDeleteEventEmiter()"
+    ></app-custom-modal>
   }`,
 })
-export class CalculatorComponent implements OnInit {
+export class CalculatorComponent {
 
   // Calculator data 
   data = input.required<Calculator>();
@@ -199,19 +212,14 @@ export class CalculatorComponent implements OnInit {
   };
 
   // Modals config
-  editModalId: string = 'editModalId';
-  deleteModalId: string = 'deleteModalId';
-  deleteModalHeaderText: string = '';
+  deleteEventEmiter = output<string>();
+  editEventEmiter = output<Calculator>();
 
   get getOperator() {
     return {
       ...Operator,
       ...OtherOperator,
     };
-  }
-
-  ngOnInit(): void {
-    this.inicializateDeleteModalInfo();
   }
 
   // **********************************************
@@ -344,10 +352,13 @@ export class CalculatorComponent implements OnInit {
   // **********************************************
   // Modal
   // **********************************************
- 
-  // TODO las cabeceras de los popups no estan bien
-  private inicializateDeleteModalInfo(): void {
-    this.deleteModalHeaderText = `Eliminar ${this.data().id} - ${this.data().name}`
+  // TODO handle eventos de editar calculadora
+
+  protected handleDeleteEventEmiter(): void {
+    this.deleteEventEmiter.emit(this.data().id);
   }
 
+  protected handleEditEventEmiter(data: Calculator): void {
+    this.editEventEmiter.emit(data);
+  }
 }

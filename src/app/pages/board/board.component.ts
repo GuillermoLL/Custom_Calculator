@@ -16,10 +16,14 @@ import { AddCalculatorFormComponent } from "../../components/add-calculator-form
     </header>
     <article class="row me-0">
       @for (calculator of calculators; track calculator.id) {
-          <app-calculator [data]="calculator" class="col"/>
-        }
+        <app-calculator [data]="calculator" class="col"
+          (deleteEventEmiter)="deleteCalculator($event)"
+          (editEventEmiter)="editCalculator($event)"/>
+      }
     </article>
-    <app-add-calculator-form [modalId]="this.addModalId" [editMode]='false'></app-add-calculator-form>
+    <app-add-calculator-form [modalId]="this.addModalId" [editMode]='false'
+      (addEventEmiter)="addCalculator($event)"
+    ></app-add-calculator-form>
   `,
   styles: ``
 })
@@ -27,7 +31,7 @@ export class BoardComponent {
   addModalId = 'addModalId';
 
   calculators: Calculator[] = [{
-    id: 1,
+    id: '1',
     name: 'Player 1',
     entity: [{
       id: 1,
@@ -48,7 +52,7 @@ export class BoardComponent {
     }]
   },
   {
-    id: 2,
+    id: '2',
     name: 'Player 2',
     entity: [
       {
@@ -105,7 +109,7 @@ export class BoardComponent {
     ]
   },
   {
-    id: 3,
+    id: '3',
     name: 'Player 3',
     entity: [{
       id: 1,
@@ -184,4 +188,18 @@ export class BoardComponent {
         ]
       }]
   }]
+
+  deleteCalculator(id: string): void {
+    this.calculators = this.calculators.filter((elm: Calculator) => elm.id !== id);
+  }
+
+  editCalculator(editedCalculator: Calculator): void {
+    this.calculators = this.calculators.map(
+      (elm: Calculator) => elm.id === editedCalculator.id ? editedCalculator : elm
+    );
+  }
+
+  addCalculator(newCalculator: Calculator): void {
+    this.calculators.push(newCalculator);
+  }
 }

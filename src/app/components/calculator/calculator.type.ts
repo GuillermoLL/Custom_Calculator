@@ -34,7 +34,7 @@ export enum OtherOperator {
 }
 
 export type Calculator = {
-    id: number
+    id: string
     name: string
     entity: Entity[]
 }
@@ -56,10 +56,10 @@ export type Options = {
     numberDecimals: boolean
     clearOperationWhenOperate: boolean
     clearOperationWhenSelectOperator: boolean
-    clearOperationWhenSelectEntity: boolean
-    digitLimit: boolean
     // Valor digitLimit -> depende clearOperationWhenSelectEntity 
     // Pero valor clearOperationWhenSelectEntity !-> NO depende digitLimit 
+    clearOperationWhenSelectEntity: boolean
+    digitLimit: boolean
 }
 
 export type Operation = {
