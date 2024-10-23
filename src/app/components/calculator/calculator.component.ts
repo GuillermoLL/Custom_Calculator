@@ -184,6 +184,7 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
       [headerText]="'Eliminar ' + calculator.name"
       [headerTextClass]="'text-danger'"
       [acceptButtonClass]="'btn-danger'"
+      [acceptText]="'Eliminar'"
       (acceptEvent)="this.handleDeleteEventEmiter()"
     ></app-custom-modal>
   }`,

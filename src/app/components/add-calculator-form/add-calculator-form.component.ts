@@ -18,7 +18,7 @@ import { Calculator } from '../calculator';
           <div class="modal-header">
             <h5 [id]="id + 'Label'"
               class="modal-title"
-              [class]="[edit ? 'text-info' : 'text-primary']"
+              [class]="[edit ? 'text-warning' : 'text-primary']"
             >{{ this.headerText }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
@@ -31,7 +31,7 @@ import { Calculator } from '../calculator';
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ this.cancelText }}</button>
             <button type="submit" data-bs-dismiss="modal"
               class="btn"
-              [class]="edit ? 'btn-info' : 'btn-primary'"
+              [class]="edit ? 'btn-warning' : 'btn-primary'"
               (click)="buildCalculator()"
             >{{ this.submitText }}</button>
           </div>

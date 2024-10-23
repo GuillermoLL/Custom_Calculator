@@ -22,11 +22,11 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
             <button type="button" data-bs-dismiss="modal"
               class="btn"
               [class]="this.cancelButtonClass()"
-              (click)="this.handleClickCancel()">Close</button>
+              (click)="this.handleClickCancel()">{{this.cancelText()}}</button>
             <button type="button" data-bs-dismiss="modal"
               class="btn"
               [class]="this.acceptButtonClass()"
-              (click)="this.handleClickAccept()">Save changes</button>
+              (click)="this.handleClickAccept()">{{this.acceptText()}}</button>
           </div>
         </div>
       </div>
@@ -40,10 +40,13 @@ export class CustomModalComponent {
   headerText = input.required<string>();
   headerTextClass = input<string>();
 
-  acceptEvent = output<number>();
   acceptButtonClass = input<string>('btn-primary');
-  cancelEvent = output<number>();
+  acceptText = input<string>('Guardar');
+  acceptEvent = output<number>();
   cancelButtonClass = input<string>('btn-secondary');
+  cancelText = input<string>('Cancelar');
+  cancelEvent = output<number>();
+
 
   handleClickAccept() {
     this.acceptEvent.emit(1);
