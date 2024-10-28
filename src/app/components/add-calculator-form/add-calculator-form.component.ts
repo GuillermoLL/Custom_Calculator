@@ -1,84 +1,100 @@
 import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
 import { Calculator } from '../calculator';
+import { CustomModalComponent } from '../../shared';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { v4 as generateUUID } from 'uuid';
 
 @Component({
   selector: 'app-add-calculator-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [],
+  imports: [CommonModule, CustomModalComponent, ReactiveFormsModule],
   styleUrl: './add-calculator-form.component.scss',
   template: `
-  @let edit = this.editMode();
-  @let id = this.modalId();
-    <div class="modal fade" [id]="id" tabindex="-1"
-      [attr.aria-labelledby]="id + 'Label'" aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 [id]="id + 'Label'"
-              class="modal-title"
-              [class]="[edit ? 'text-warning' : 'text-primary']"
-            >{{ this.headerText }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div>
-
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ this.cancelText }}</button>
-            <button type="submit" data-bs-dismiss="modal"
-              class="btn"
-              [class]="edit ? 'btn-warning' : 'btn-primary'"
-              (click)="buildCalculator()"
-            >{{ this.submitText }}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+    @let edit = this.editMode();
+    @let id = this.modalId();
+    <app-custom-modal [modalId]="id"
+      [headerText]="this.headerText"
+      [headerTextClass]="edit ? 'text-warning' : 'text-primary'"
+      [acceptText]="this.submitText"
+      [acceptButtonClass]="edit ? 'btn-warning' : 'btn-primary'"
+      [cancelText]="this.cancelText"
+      (acceptEvent)="this.buildCalculator()"
+      >
+      @if(this.myForm){
+        <form [formGroup]="myForm">
+          <label for="calculatorName">Nombre</label>
+          <input id="calculatorName" class="form-control" type="text" formControlName="name"
+            [placeholder]="">
+        </form>
+      }
+    </app-custom-modal>
+  `
 })
 export class AddCalculatorFormComponent implements OnInit {
 
-  // TODO formulario de añadir y editar calculadora
-
-  data = input<Calculator>({ id: '', name: '', entity: [] });
+  // Initial config
   modalId = input.required<string>();
-  editMode = input.required<boolean>();
+  editMode = input<boolean>(false);
+  data = input<Calculator>({ id: '', name: '', entity: [] });
 
-  editEventEmiter = output<Calculator>();
-  addEventEmiter = output<Calculator>();
-
+  // Form texts
   headerText = 'Nueva calculadora';
   submitText = 'Crear';
   cancelText = 'Cancelar';
 
+  // Form data
+  private fb = new FormBuilder();
+  // TODO Diseñar y maquetar formulario
+  // TODO Configurar los inputs y los controles del formulario
+  protected myForm?: FormGroup;
+
+  // Event Emiters
+  editEventEmiter = output<Calculator>();
+  addEventEmiter = output<Calculator>();
 
   ngOnInit(): void {
+    console.log(this.data());
     if (this.editMode() && this.data()) {
       this.headerText = `Editar ${this.data()?.name}`;
       this.submitText = 'Editar';
-    };
+    }
+    this.myForm = this.fb.group({
+      name: this.fb.control(this.data().name),
+      entity: this.fb.group({
+        name: this.fb.control('', [Validators.required]),
+        icon: this.fb.control(''),
+        color: this.fb.control(''),
+        resultDefault: this.fb.control('', [Validators.required]),
+        resultCurrent: this.fb.control('', [Validators.required]),
+        options: this.fb.control('', [Validators.required]),
+        customOperations: this.fb.group({
+          operator: this.fb.control('', [Validators.required]),
+          numberToApply: this.fb.control('', [Validators.required]),
+          color: this.fb.control(''),
+        })
+      })
+    });
   }
 
-  buildCalculator(): void {
-    const id = this.editMode() ? this.data().id : '1232131';
-    const entity = this.data().entity.map(
+  protected buildCalculator(): void {
+    const id = this.editMode() ? this.data()?.id : generateUUID();
+    const name = this.data()?.name ? this.data()?.name : 'Nueva calculadora'
+    const entity = this.data()?.entity.map(
       (elm) => elm
     );
 
-    const calculator: Calculator = {
+    const calculator: any = {
       id,
-      name: 'testetst',
+      name,
       entity
     };
 
     this.sendCalculator(calculator);
   }
 
-  sendCalculator(calculator: Calculator): void {
+  private sendCalculator(calculator: Calculator): void {
     this.editMode()
       ? this.editEventEmiter.emit(calculator)
       : this.addEventEmiter.emit(calculator);

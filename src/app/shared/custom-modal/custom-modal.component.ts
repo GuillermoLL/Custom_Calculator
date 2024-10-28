@@ -16,15 +16,15 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Modal body text goes here.</p>
+            <ng-content></ng-content>
           </div>
           <div class="modal-footer">
             <button type="button" data-bs-dismiss="modal"
-              class="btn"
+              class="btn text-white"
               [class]="this.cancelButtonClass()"
               (click)="this.handleClickCancel()">{{this.cancelText()}}</button>
             <button type="button" data-bs-dismiss="modal"
-              class="btn"
+              class="btn text-white"
               [class]="this.acceptButtonClass()"
               (click)="this.handleClickAccept()">{{this.acceptText()}}</button>
           </div>
@@ -37,16 +37,17 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 })
 export class CustomModalComponent {
   modalId = input.required<string>();
+
   headerText = input.required<string>();
   headerTextClass = input<string>();
 
   acceptButtonClass = input<string>('btn-primary');
   acceptText = input<string>('Guardar');
   acceptEvent = output<number>();
+
   cancelButtonClass = input<string>('btn-secondary');
   cancelText = input<string>('Cancelar');
   cancelEvent = output<number>();
-
 
   handleClickAccept() {
     this.acceptEvent.emit(1);

@@ -16,12 +16,12 @@ import { AddCalculatorFormComponent } from "../../components/add-calculator-form
     </header>
     <article class="row me-0">
       @for (calculator of calculators; track calculator.id) {
-        <app-calculator [data]="calculator" class="col"
+        <app-calculator [data]="calculator" class="col-xl-3 col-lg-6 col-md-6"
           (deleteEventEmiter)="deleteCalculator($event)"
           (editEventEmiter)="editCalculator($event)"/>
       }
     </article>
-    <app-add-calculator-form [modalId]="this.addModalId" [editMode]='false'
+    <app-add-calculator-form [modalId]="this.addModalId"
       (addEventEmiter)="addCalculator($event)"
     ></app-add-calculator-form>
   `,
@@ -31,7 +31,7 @@ export class BoardComponent {
   addModalId = 'addModalId';
 
   calculators: Calculator[] = [{
-    id: '1',
+    id: '25bd3460-9525-11ef-9a0e-1dcdfe04b99c',
     name: 'Player 1',
     entity: [{
       id: 1,
@@ -52,7 +52,7 @@ export class BoardComponent {
     }]
   },
   {
-    id: '2',
+    id: '2ec844a0-9525-11ef-9a0e-1dcdfe04b99c',
     name: 'Player 2',
     entity: [
       {
@@ -109,7 +109,7 @@ export class BoardComponent {
     ]
   },
   {
-    id: '3',
+    id: '34b83230-9525-11ef-9a0e-1dcdfe04b99c',
     name: 'Player 3',
     entity: [{
       id: 1,

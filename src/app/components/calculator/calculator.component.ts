@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
 import { Calculator, Entity, OtherOperator, Operator, Options } from './calculator.type';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { CustomModalComponent } from "../../shared/custom-modal/custom-modal.component";
 import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculator-form.component";
 
@@ -8,7 +7,7 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
   selector: 'app-calculator',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgbDropdownModule, CustomModalComponent, AddCalculatorFormComponent],
+  imports: [CustomModalComponent, AddCalculatorFormComponent],
   styleUrl: './calculator.component.scss',
   template: `
     @let calculator = data();
@@ -22,7 +21,7 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
       <!-- ************************************ -->
       <div class="input-group">
         <label class="form-control rounded-bottom-0">{{ calculator.name }}</label>
-        <button class="btn btn-outline-primary border rounded-bottom-0" type="button"
+        <button class="btn btn-outline-warning border rounded-bottom-0" type="button"
           data-bs-toggle="modal" [attr.data-bs-target]="'#' + editModalId">
           <i class="bi bi-pencil"></i>
         </button>
@@ -186,7 +185,9 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
       [acceptButtonClass]="'btn-danger'"
       [acceptText]="'Eliminar'"
       (acceptEvent)="this.handleDeleteEventEmiter()"
-    ></app-custom-modal>
+    >
+      <p>¿Estas seguro que quieres eliminar {{ calculator.name }}?</p>
+    </app-custom-modal>
   }`,
 })
 export class CalculatorComponent {
@@ -202,7 +203,7 @@ export class CalculatorComponent {
   numberToApply?: string;
   numberBeforeOperate?: number;
 
-  // Calculator Configuration
+  // Configuration
   options: Options = {
     numberOverflow: false,
     numberDecimals: false,
@@ -212,7 +213,7 @@ export class CalculatorComponent {
     clearOperationWhenSelectEntity: false
   };
 
-  // Modals config
+  // Event Emiters
   deleteEventEmiter = output<string>();
   editEventEmiter = output<Calculator>();
 
@@ -227,7 +228,7 @@ export class CalculatorComponent {
   // Handles events
   // **********************************************
 
-  handleClickEntity(idEntity: number): void {
+  protected handleClickEntity(idEntity: number): void {
     // New entitySelected
     this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity)
 
@@ -246,10 +247,10 @@ export class CalculatorComponent {
     }
   }
 
-  handleClickNumber(num: string): void {
+  protected handleClickNumber(num: string): void {
     // _Option digitLimit
     // If have reached the character limit, dont add more numbers.
-    let resultCurrentLength = this.entitySelected?.resultCurrent! > 0 
+    let resultCurrentLength = this.entitySelected?.resultCurrent! >= 0 
       ? this.entitySelected?.resultCurrent.toString().length
       : this.entitySelected?.resultCurrent.toString().slice(1).length; // Prevents the length change when resultCurrent is negative
     
@@ -269,7 +270,7 @@ export class CalculatorComponent {
     else this.numberToApply = num;
   }
 
-  handleClickOperator(operator: Operator): void {
+  protected handleClickOperator(operator: Operator): void {
     // _Option clearOperationWhenSelectOperator
     if (this.options.clearOperationWhenSelectOperator)
       this.resetOperation();
@@ -277,7 +278,7 @@ export class CalculatorComponent {
     this.operatorSelected = operator;
   }
 
-  handleClickRareOperator(operator: OtherOperator): void {
+  protected handleClickRareOperator(operator: OtherOperator): void {
     const operation = {
       [this.getOperator.CORRECT]: () =>
         this.numberToApply ? this.numberToApply = this.numberToApply?.slice(0, -1) : this.operatorSelected = undefined,
@@ -294,7 +295,7 @@ export class CalculatorComponent {
     operation[operator]();
   }
 
-  handleClickCustomOperation(operator: Operator, numberToApply: number): void {
+  protected handleClickCustomOperation(operator: Operator, numberToApply: number): void {
     this.applyOperation(operator, numberToApply);
   }
 
@@ -353,7 +354,6 @@ export class CalculatorComponent {
   // **********************************************
   // Modal
   // **********************************************
-  // TODO handle eventos de editar calculadora
 
   protected handleDeleteEventEmiter(): void {
     this.deleteEventEmiter.emit(this.data().id);
