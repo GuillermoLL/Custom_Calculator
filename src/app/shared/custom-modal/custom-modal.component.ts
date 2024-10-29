@@ -1,19 +1,23 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-custom-modal',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   template: `
     @let id = modalId();
     <div class="modal fade" [id]="id" tabindex="-1"
+      [attr.data-bs-backdrop]="backdropStatic() ? 'static' : null"
+      [attr.data-bs-keyboard]="!backdropStatic()"
       [attr.aria-labelledby]="id + 'Label'" aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" [className]="this.headerTextClass()" [id]="id + 'Label'">{{this.headerText()}}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="this.handleClickCancel()"></button>
           </div>
           <div class="modal-body">
             <ng-content></ng-content>
@@ -26,16 +30,17 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
             <button type="button" data-bs-dismiss="modal"
               class="btn text-white"
               [class]="this.acceptButtonClass()"
-              (click)="this.handleClickAccept()">{{this.acceptText()}}</button>
+              (click)="this.handleClickAccept()"
+              [disabled]="this.acceptButtonDisabled">{{this.acceptText()}}</button>
           </div>
         </div>
       </div>
     </div>
     `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
-export class CustomModalComponent {
+export class CustomModalComponent implements OnInit {
   modalId = input.required<string>();
 
   headerText = input.required<string>();
@@ -44,10 +49,18 @@ export class CustomModalComponent {
   acceptButtonClass = input<string>('btn-primary');
   acceptText = input<string>('Guardar');
   acceptEvent = output<number>();
+  $acceptButtonDisabled = input<BehaviorSubject<boolean>>();
+  protected acceptButtonDisabled = false;
 
   cancelButtonClass = input<string>('btn-secondary');
   cancelText = input<string>('Cancelar');
   cancelEvent = output<number>();
+
+  backdropStatic = input<boolean>(false);
+
+  ngOnInit(): void {
+    this.$acceptButtonDisabled()?.subscribe((elm) => this.acceptButtonDisabled = elm);
+  }
 
   handleClickAccept() {
     this.acceptEvent.emit(1);
