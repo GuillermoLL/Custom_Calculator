@@ -19,10 +19,10 @@ export enum Color {
 }
 
 export enum Operator {
-    ADDITION = '+',
-    SUBTRACTION = '-',
+    ADDITION = 'plus',
+    SUBTRACTION = 'dash',
     MULTIPLICATION = 'x',
-    DIVISION = '/',
+    DIVISION = 'slash',
 }
 
 export enum OtherOperator {

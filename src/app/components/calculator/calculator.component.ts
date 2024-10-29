@@ -65,7 +65,7 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
           [style.border-color]="entitySelected.color"
         >
           <i> {{ entitySelected.resultCurrent }}</i>
-          <span> {{ operatorSelected }}</span>
+          <i [class]="['bi', 'bi-'+ operatorSelected]"></i>
           <span> {{ numberToApply }}</span>
         </div>
 
@@ -124,7 +124,7 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
                     [style.border-color]="entitySelected.color"
                     (click)="handleClickOperator(operator)"
                   >
-                  {{ operator }}
+                    <i [class]="['bi', 'bi-'+ operator+'-lg']"></i>
                 </button>
               }
             </div>
@@ -165,7 +165,7 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
                 [style.border-color]="customOperation.color"
                 (click)="handleClickCustomOperation(customOperation.operator, customOperation.numberToApply)"
               >
-                {{ customOperation.operator }} {{ customOperation.numberToApply }}
+              <i [class]="['bi', 'bi-'+ customOperation.operator]"></i> {{ customOperation.numberToApply }}
               </button>
               }
             </div>
