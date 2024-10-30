@@ -30,6 +30,9 @@ import { AddCalculatorFormComponent } from "../../components/add-calculator-form
 export class BoardComponent {
   addModalId = 'addModalId';
 
+  // TODO los datos no se sincronizan correctamente, hacer servicio con observables
+
+
   calculators: Calculator[] = [{
     id: '25bd3460-9525-11ef-9a0e-1dcdfe04b99c',
     name: 'Player 1',
@@ -115,7 +118,6 @@ export class BoardComponent {
       id: 1,
       name: 'Vida',
       color: Color.RED,
-      icon: Icon.HEART,
       resultDefault: 100,
       resultCurrent: 100,
       options: {
