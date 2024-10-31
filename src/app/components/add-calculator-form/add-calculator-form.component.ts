@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
-import { Calculator, Color, Icon, Operation, Operator, Options } from '../calculator';
-import { CustomModalComponent } from '../../shared';
+import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { Calculator, Color, Icon, Operation, Operator } from '../calculator';
+import { CustomModalComponent } from '../../shared';
 import { v4 as generateUUID } from 'uuid';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-add-calculator-form',
@@ -69,9 +69,10 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
                 <div class="accordion-body">
                   <div class="mb-3 d-flex justify-content-center">
                     <!-- Icons List -->
-                    <select class="selectpicker form-control me-3" aria-label="Lista de iconos" formControlName="icon" style="width: 40px; height: 40px;">
+                    <select class="selectpicker form-control me-3" aria-label="Lista de iconos" formControlName="icon"
+                      data-iconBase="bi bi-" data-width="fit" data-size="5">
                       @for(icon of Icons; track $index){
-                        <option [value]="icon" [attr.data-content]="'<i class=bi bi-{{icon}}></i>'"></option>
+                        <option [value]="icon" [attr.data-icon]="icon">aaaa</option>
                       }
                     </select>
                     <!-- Color picker -->
@@ -135,9 +136,11 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
                     @for(customOperation of entity.customOperations; track $index){
                       <div [formGroupName]="$index" class="input-group mb-3 position-relative ">
                         <!-- Operators List -->
-                        <select class="selectpicker form-control" aria-label="Lista de iconos" formControlName="operator" style="width: 40px; height: 40px;">
+                        <select class="selectpicker form-control" aria-label="Lista de operadores" formControlName="operator"
+                          data-iconBase="bi bi-" data-width="fit" data-size="5">
                           @for(operator of Operators; track $index){
-                            <option [value]="operator" [attr.data-content]="'<i class=bi bi-{{operator}}-lg></i>'"></option>
+                            <option [value]="operator" [attr.data-icon]="operator">aaaa</option>
+                            <!-- <option [value]="operator" [attr.data-content]="'<i class=bi bi-{{operator}}></i>'"></option> -->
                           }
                         </select>
                         <!-- Number To Apply -->
@@ -147,7 +150,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
                         <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="colorPicker" title="Lista de colores">
                         <!-- Delete Custom Operation -->
                         <span type="button" class="position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
-                          (click)="deleteCustomOperation(entityIndex, $index)">
+                          (click)="deleteCustomOperation(entityIndex, $index)" style="z-index: 10;">
                           <i class="bi bi-{{Operator.MULTIPLICATION}}-lg"  style="margin: -3px"></i>
                         </span>
                       </div>
