@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
-import { Calculator, Color, Icon, Operation, Operator } from '../calculator';
+import { Calculator, Color, Icon, Operation, Operator, Options } from '../calculator';
 import { CustomModalComponent } from '../../shared';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -36,16 +36,18 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
           <!-- Entity -->
           <div class="accordion accordion-flush" id="accordionEntities" formArrayName="entity">
           @for(entity of entityList.value; track entity.id){
-            <div class="accordion-item" [formGroupName]="$index">
+            @let entityIndex = $index;
+            <div class="accordion-item position-relative" [formGroupName]="entityIndex">
+              <!-- Accordion header -->
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" style="color: {{entity.color}}; border-color: {{entity.color}}; background-color: transparent"
-                  data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+$index" aria-expanded="false" [attr.aria-controls]="'collapse'+$index">
+                  data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+entityIndex" aria-expanded="false" [attr.aria-controls]="'collapse'+entityIndex">
                   <div class="d-flex justify-content-between w-100">
                     <div class="d-flex gap-3">
                       <i class="bi {{'bi-'+ entity.icon}}"></i>
-                      {{entity.name}}
+                      {{entity.name ? entity.name  : 'Nuevo elemento' }}
                     </div>
-                    @if(entity.resultDefault){
+                    @if(entity.resultDefault >= 0){
                       <div class="pe-3">
                         <span [style.color]="'white'">{{ entity.resultCurrent }} / </span>
                         <span>
@@ -53,87 +55,118 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
                         >
                       </div>
                     }
+                    <!-- Delete entity -->
+                    <span type="button" class="position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger mb-1"
+                      style="margin: 26px -30px; z-index: 12;"
+                      (click)="deleteEntity(entityIndex)">
+                      <i class="bi bi-{{Operator.MULTIPLICATION}}-lg" style="margin: -3px"></i>
+                    </span>
                   </div>
                 </button>
               </h2>
-              <div [id]="'collapse'+$index" class="accordion-collapse collapse" data-bs-parent="accordionEntities" >
+              <!-- Accordion Body -->
+              <div [id]="'collapse'+entityIndex" class="accordion-collapse collapse" data-bs-parent="accordionEntities" >
                 <div class="accordion-body">
                   <div class="mb-3 d-flex justify-content-center">
-                    <!-- Lista de icons -->
+                    <!-- Icons List -->
                     <select class="selectpicker form-control me-3" aria-label="Lista de iconos" formControlName="icon" style="width: 40px; height: 40px;">
                       @for(icon of Icons; track $index){
                         <option [value]="icon" [attr.data-content]="'<i class=bi bi-{{icon}}></i>'"></option>
                       }
                     </select>
-                    <!-- Seleccionar colores -->
+                    <!-- Color picker -->
                     <input type="color" class="form-control p-0" formControlName="color" id="colorPicker" title="Lista de colores">
                   </div>
                   <div class="input-group mb-3">
-                    <!-- Input Nombre -->
-                    <input type="text" class="form-control"
-                      formControlName="name" [value]="entity.name" placeholder="Nombre">
-                    <!-- Resultado -->
-                    <input id="resultDefault" class="form-control" type="number"
-                        formControlName="resultDefault" [value]="entity.resultDefault" placeholder="Resultado">
+                    <!-- Input Name -->
+                    <input type="text" class="form-control" style="color: {{entity.color}}"
+                      formControlName="name" placeholder="Nombre">
+                    <!-- Result Default -->
+                    <input id="resultDefault" class="form-control" type="number" style="color: {{entity.color}}"
+                        formControlName="resultDefault" placeholder="Resultado">
                   </div>
-                  <div class="input-group mb-3">
-                  </div>
-                  <fieldset formGroupName="options">
+                  <fieldset formGroupName="options" class="mb-3">
                     <legend>Opciones</legend>
-                    <div>
-                      <!-- //TODO TOOLTIP -->
-                      <label for="numberOverflow">Desbordamiento de números</label>
-                      <input id="numberOverflow" class="form-control" type="text" formControlName="numberOverflow" [value]="entity.options.numberOverflow">
+                    <div class="form-check form-switch">
+                      <!-- Number Overflow -->
+                      <label class="form-check-label" for="numberOverflow">Desbordamiento de números</label>
+                      <input id="numberOverflow" class="form-check-input" type="checkbox" role="switch" formControlName="numberOverflow"
+                        style="background-color: {{entity.options.numberOverflow ? entity.color : 'transparent'}};
+                          border-color: {{entity.options.numberOverflow ? entity.color : Color.GREY}}">
                     </div>
-                    <div>
-                      <!-- //TODO TOOLTIP -->
-                      <label for="numberDecimals">Número con decimales</label>
-                      <input id="numberDecimals" class="form-control" type="text" formControlName="numberDecimals" [value]="entity.options.numberDecimals">
+                    <div class="form-check form-switch">
+                      <!-- Number Decimals -->
+                      <label class="form-check-label" for="numberDecimals">Número con decimales</label>
+                      <input id="numberDecimals" class="form-check-input" type="checkbox" role="switch" formControlName="numberDecimals"
+                        style="background-color: {{entity.options.numberDecimals ? entity.color : 'transparent'}};
+                          border-color: {{entity.options.numberDecimals ? entity.color : Color.GREY}}">
                     </div>
-                    <div>
-                      <!-- //TODO TOOLTIP -->
-                      <label for="clearOperationWhenOperate">Limpiar operación al operar</label>
-                      <input id="clearOperationWhenOperate" class="form-control" type="text" formControlName="clearOperationWhenOperate" [value]="entity.options.clearOperationWhenOperate">
+                    <div class="form-check form-switch">
+                      <!-- Clear Operation When Operate -->
+                      <label class="form-check-label" for="clearOperationWhenOperate">Limpiar operación al operar</label>
+                      <input id="clearOperationWhenOperate" class="form-check-input" type="checkbox" role="switch" formControlName="clearOperationWhenOperate"
+                        style="background-color: {{entity.options.clearOperationWhenOperate ? entity.color : 'transparent'}};
+                          border-color: {{entity.options.clearOperationWhenOperate ? entity.color : Color.GREY}}">
                     </div>
-                    <div>
-                      <!-- //TODO TOOLTIP -->
-                      <label for="clearOperationWhenSelectOperator">Limpiar operación al seleccionar operador</label>
-                      <input id="clearOperationWhenSelectOperator" class="form-control" type="text" formControlName="clearOperationWhenSelectOperator" [value]="entity.options.clearOperationWhenSelectOperator">
+                    <div class="form-check form-switch">
+                       <!-- Clear Operation When Select Operator -->
+                      <label class="form-check-label" for="clearOperationWhenSelectOperator">Limpiar operación al seleccionar operador</label>
+                      <input id="clearOperationWhenSelectOperator" class="form-check-input" type="checkbox" role="switch" formControlName="clearOperationWhenSelectOperator"
+                        style="background-color: {{entity.options.clearOperationWhenSelectOperator ? entity.color : 'transparent'}};
+                          border-color: {{entity.options.clearOperationWhenSelectOperator ? entity.color : Color.GREY}}">
                     </div>
-                    <div>
-                      <!-- //TODO TOOLTIP -->
-                      <label for="clearOperationWhenSelectEntity">Limpiar operación al seleccionar elemento</label>
-                      <input id="clearOperationWhenSelectEntity" class="form-control" type="text" formControlName="clearOperationWhenSelectEntity" [value]="entity.options.clearOperationWhenSelectEntity">
+                    <div class="form-check form-switch">
+                       <!-- Clear Operation When Select Entity -->
+                      <label class="form-check-label" for="clearOperationWhenSelectEntity">Limpiar operación al seleccionar elemento</label>
+                      <input id="clearOperationWhenSelectEntity" class="form-check-input" type="checkbox" role="switch" formControlName="clearOperationWhenSelectEntity"
+                        style="background-color: {{entity.options.clearOperationWhenSelectEntity ? entity.color : 'transparent'}};
+                          border-color: {{entity.options.clearOperationWhenSelectEntity ? entity.color : Color.GREY}}">
                     </div>
-                    <div>
-                      <!-- //TODO TOOLTIP -->
-                      <label for="digitLimit">Limitar de digitos</label>
-                      <input id="digitLimit" class="form-control" type="text" formControlName="digitLimit" [value]="entity.options.digitLimit">
+                    <div class="form-check form-switch">
+                      <!-- Digit Limit -->
+                      <label class="form-check-label" for="digitLimit">Limitar de digitos</label>
+                      <input id="digitLimit" class="form-check-input" type="checkbox" role="switch" formControlName="digitLimit"
+                        style="background-color: {{entity.options.digitLimit ? entity.color : 'transparent'}};
+                          border-color: {{entity.options.digitLimit ? entity.color : Color.GREY}}">
                     </div>
                   </fieldset>
-                  <fieldset formArrayName="customOperations">
+                  <fieldset formArrayName="customOperations" class="d-grid">
                     <legend>Operaciones personalizadas</legend>
                     @for(customOperation of entity.customOperations; track $index){
-                      <div [formGroupName]="$index">
-                        <div>
-                          <label for="operatorCustomOperation">Operación</label>
-                          <input id="operatorCustomOperation" class="form-control" type="text" formControlName="operator" [value]="customOperation.operator">
-                        </div>
-                        <div>
-                          <label for="numberCustomOperation">Número</label>
-                          <input id="numberCustomOperation" class="form-control" type="text" formControlName="numberToApply" [value]="customOperation.numberToApply">
-                        </div>
-                        <div>
-                          <label for="colorCustomOperation">Color</label>
-                          <input id="colorCustomOperation" class="form-control" type="text" formControlName="color" [value]="customOperation.color">
-                        </div>
+                      <div [formGroupName]="$index" class="input-group mb-3 position-relative ">
+                        <!-- Operators List -->
+                        <select class="selectpicker form-control" aria-label="Lista de iconos" formControlName="operator" style="width: 40px; height: 40px;">
+                          @for(operator of Operators; track $index){
+                            <option [value]="operator" [attr.data-content]="'<i class=bi bi-{{operator}}-lg></i>'"></option>
+                          }
+                        </select>
+                        <!-- Number To Apply -->
+                        <input id="numberToApply" class="form-control text-center" type="number"
+                          formControlName="numberToApply" placeholder="Número">
+                        <!-- Color picker -->
+                        <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="colorPicker" title="Lista de colores">
+                        <!-- Delete Custom Operation -->
+                        <span type="button" class="position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
+                          (click)="deleteCustomOperation(entityIndex, $index)">
+                          <i class="bi bi-{{Operator.MULTIPLICATION}}-lg"  style="margin: -3px"></i>
+                        </span>
                       </div>
                     }
+                    <button type="button" class="btn btn-{{edit ? 'warning' : 'primary'}}" (click)="addCustomOperation(entityIndex)"
+                      style="background-color: {{entity.color}}; border-color: {{entity.color}}">
+                      <i class="bi bi-{{Operator.ADDITION}}-lg"> Añadir operación</i>
+                    </button>
                   </fieldset>
                 </div>
               </div>
             </div>
           }
+          </div>
+          <!-- Add Entity -->
+          <div class="d-grid mt-3">
+            <button type="button" class="btn btn-{{edit ? 'warning' : 'primary'}}" (click)="addEntity()">
+              <i class="bi bi-{{Operator.ADDITION}}-lg"> Añadir elemento</i>
+            </button>
           </div>
         </form>
       }
@@ -142,7 +175,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 })
 export class AddCalculatorFormComponent implements OnInit {
 
-  // TODO Terminar de diseñar y maquetar formulario
+  // TODO Validaciones
 
   // Initial config
   modalId = input.required<string>();
@@ -167,16 +200,20 @@ export class AddCalculatorFormComponent implements OnInit {
     return this.myForm?.get('entity') as FormArray
   }
 
-  get Icons() {
+  get Icons(): string[] {
     return Object.values(Icon) as string[];
   }
 
-  get Operators() {
+  get Operators(): string[] {
     return Object.values(Operator) as string[];
   }
 
-  get Colors() {
-    return Object.values(Color) as string[];
+  get Operator() {
+    return Operator
+  }
+
+  get Color() {
+    return Color
   }
 
   ngOnInit(): void {
@@ -203,7 +240,6 @@ export class AddCalculatorFormComponent implements OnInit {
       name: this.fb.control(this.data().name),
       entity: this.fb.array([])
     });
-    this.addEntity();
   }
 
   private initEditForm(): void {
@@ -264,11 +300,11 @@ export class AddCalculatorFormComponent implements OnInit {
     this.entityList.push(
       this.fb.group({
         id: this.fb.control(generateUUID(), [Validators.required]),
-        name: this.fb.control('Nuevo elemento', [Validators.required]),
+        name: this.fb.control(null, [Validators.required]),
         icon: this.fb.control(Icon.HEART),
-        color: this.fb.control(Color.RED, [Validators.required]),
-        resultDefault: this.fb.control(null, [Validators.required]),
-        resultCurrent: this.fb.control(null, [Validators.required]),
+        color: this.fb.control(this.editMode() ? Color.ORANGE : Color.PURPLE, [Validators.required]),
+        resultDefault: this.fb.control(0, [Validators.required]),
+        resultCurrent: this.fb.control(0, [Validators.required]),
         options: this.fb.group({
           numberOverflow: this.fb.control(false, [Validators.required]),
           numberDecimals: this.fb.control(false, [Validators.required]),
@@ -291,9 +327,9 @@ export class AddCalculatorFormComponent implements OnInit {
 
     customOperations.push(
       this.fb.group({
-        operator: this.fb.control(null, [Validators.required]),
-        numberToApply: this.fb.control(null, [Validators.required]),
-        color: this.fb.control(null, [Validators.required]),
+        operator: this.fb.control(Operator.ADDITION, [Validators.required]),
+        numberToApply: this.fb.control(0, [Validators.required]),
+        color: this.fb.control(Color.ORANGE, [Validators.required]),
       })
     );
   }
