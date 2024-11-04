@@ -229,21 +229,27 @@ export class CalculatorComponent {
   // **********************************************
 
   protected handleClickEntity(idEntity: number): void {
-    // New entitySelected
-    this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity)
+    // Close the calculator when click the same Entity
+    if (this.entitySelected?.id !== idEntity) {
 
-    if (this.entitySelected) {
-      this.numberBeforeOperate = this.entitySelected.resultCurrent * 1;
-      for (const option in this.entitySelected.options) {
-        this.options[option] = this.entitySelected.options[option];
+      // New entitySelected
+      this.entitySelected = this.data().entity.find((elm) => elm.id === idEntity)
+
+      if (this.entitySelected) {
+        this.numberBeforeOperate = this.entitySelected.resultCurrent * 1;
+        for (const option in this.entitySelected.options) {
+          this.options[option] = this.entitySelected.options[option];
+        }
+
+        // Makes sure the option is correct
+        if (this.entitySelected.options.digitLimit)
+          this.options.clearOperationWhenSelectEntity = true;
+
+        // _Option clearOperationWhenSelectEntity
+        this.options.clearOperationWhenSelectEntity ? this.numberToApply = '' : '';
       }
-
-      // Makes sure the option is correct
-      if (this.entitySelected.options.digitLimit)
-        this.options.clearOperationWhenSelectEntity = true;
-
-      // _Option clearOperationWhenSelectEntity
-      this.options.clearOperationWhenSelectEntity ? this.numberToApply = '' : '';
+    } else {
+      this.entitySelected = undefined;
     }
   }
 

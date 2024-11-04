@@ -40,7 +40,8 @@ import { v4 as generateUUID } from 'uuid';
             <div class="accordion-item position-relative" [formGroupName]="entityIndex">
               <!-- Accordion header -->
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" style="color: {{entity.color}}; border-color: {{entity.color}}; background-color: transparent"
+                <button class="accordion-button collapsed focus-ring" type="button"
+                  style="color: {{entity.color}}; border-color: {{entity.color}}; background-color: transparent; --bs-focus-ring-color: {{entity.color}}4C;"
                   data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+entityIndex" aria-expanded="false" [attr.aria-controls]="'collapse'+entityIndex">
                   <div class="d-flex justify-content-between w-100">
                     <div class="d-flex gap-3">
@@ -80,8 +81,8 @@ import { v4 as generateUUID } from 'uuid';
                   </div>
                   <div class="input-group mb-3">
                     <!-- Input Name -->
-                    <input type="text" class="form-control" style="color: {{entity.color}}"
-                      formControlName="name" placeholder="Nombre">
+                    <input type="text" formControlName="name" placeholder="Nombre"
+                      class="form-control" style="color: {{entity.color}};">
                     <!-- Result Default -->
                     <input id="resultDefault" class="form-control" type="number" style="color: {{entity.color}}"
                         formControlName="resultDefault" placeholder="Resultado">
@@ -90,45 +91,52 @@ import { v4 as generateUUID } from 'uuid';
                     <legend>Opciones</legend>
                     <div class="form-check form-switch">
                       <!-- Number Overflow -->
-                      <label class="form-check-label" for="numberOverflow">Desbordamiento de números</label>
-                      <input id="numberOverflow" class="form-check-input" type="checkbox" role="switch" formControlName="numberOverflow"
+                      <label for="numberOverflow" class="form-check-label">Desbordamiento de números</label>
+                      <input id="numberOverflow" class="form-check-input focus-ring" type="checkbox" role="switch" formControlName="numberOverflow"
                         style="background-color: {{entity.options.numberOverflow ? entity.color : 'transparent'}};
-                          border-color: {{entity.options.numberOverflow ? entity.color : Color.GREY}}">
+                          border-color: {{entity.options.numberOverflow ? entity.color : Color.GREY}};
+                          --bs-focus-ring-color: {{entity.color}}4C;"
+                        >
                     </div>
                     <div class="form-check form-switch">
                       <!-- Number Decimals -->
                       <label class="form-check-label" for="numberDecimals">Número con decimales</label>
-                      <input id="numberDecimals" class="form-check-input" type="checkbox" role="switch" formControlName="numberDecimals"
+                      <input id="numberDecimals" class="form-check-input focus-ring" type="checkbox" role="switch" formControlName="numberDecimals"
                         style="background-color: {{entity.options.numberDecimals ? entity.color : 'transparent'}};
-                          border-color: {{entity.options.numberDecimals ? entity.color : Color.GREY}}">
+                          border-color: {{entity.options.numberDecimals ? entity.color : Color.GREY}};
+                          --bs-focus-ring-color: {{entity.color}}4C;">
                     </div>
                     <div class="form-check form-switch">
                       <!-- Clear Operation When Operate -->
                       <label class="form-check-label" for="clearOperationWhenOperate">Limpiar operación al operar</label>
-                      <input id="clearOperationWhenOperate" class="form-check-input" type="checkbox" role="switch" formControlName="clearOperationWhenOperate"
+                      <input id="clearOperationWhenOperate" class="form-check-input focus-ring" type="checkbox" role="switch" formControlName="clearOperationWhenOperate"
                         style="background-color: {{entity.options.clearOperationWhenOperate ? entity.color : 'transparent'}};
-                          border-color: {{entity.options.clearOperationWhenOperate ? entity.color : Color.GREY}}">
+                          border-color: {{entity.options.clearOperationWhenOperate ? entity.color : Color.GREY}};
+                          --bs-focus-ring-color: {{entity.color}}4C;">
                     </div>
                     <div class="form-check form-switch">
                        <!-- Clear Operation When Select Operator -->
                       <label class="form-check-label" for="clearOperationWhenSelectOperator">Limpiar operación al seleccionar operador</label>
-                      <input id="clearOperationWhenSelectOperator" class="form-check-input" type="checkbox" role="switch" formControlName="clearOperationWhenSelectOperator"
+                      <input id="clearOperationWhenSelectOperator" class="form-check-input focus-ring" type="checkbox" role="switch" formControlName="clearOperationWhenSelectOperator"
                         style="background-color: {{entity.options.clearOperationWhenSelectOperator ? entity.color : 'transparent'}};
-                          border-color: {{entity.options.clearOperationWhenSelectOperator ? entity.color : Color.GREY}}">
+                          border-color: {{entity.options.clearOperationWhenSelectOperator ? entity.color : Color.GREY}};
+                          --bs-focus-ring-color: {{entity.color}}4C;">
                     </div>
                     <div class="form-check form-switch">
                        <!-- Clear Operation When Select Entity -->
                       <label class="form-check-label" for="clearOperationWhenSelectEntity">Limpiar operación al seleccionar elemento</label>
-                      <input id="clearOperationWhenSelectEntity" class="form-check-input" type="checkbox" role="switch" formControlName="clearOperationWhenSelectEntity"
+                      <input id="clearOperationWhenSelectEntity" class="form-check-input focus-ring" type="checkbox" role="switch" formControlName="clearOperationWhenSelectEntity"
                         style="background-color: {{entity.options.clearOperationWhenSelectEntity ? entity.color : 'transparent'}};
-                          border-color: {{entity.options.clearOperationWhenSelectEntity ? entity.color : Color.GREY}}">
+                          border-color: {{entity.options.clearOperationWhenSelectEntity ? entity.color : Color.GREY}};
+                          --bs-focus-ring-color: {{entity.color}}4C;">
                     </div>
                     <div class="form-check form-switch">
                       <!-- Digit Limit -->
-                      <label class="form-check-label" for="digitLimit">Limitar de digitos</label>
-                      <input id="digitLimit" class="form-check-input" type="checkbox" role="switch" formControlName="digitLimit"
+                      <label class="form-check-label" for="digitLimit">Limitar números</label>
+                      <input id="digitLimit" class="form-check-input focus-ring" type="checkbox" role="switch" formControlName="digitLimit"
                         style="background-color: {{entity.options.digitLimit ? entity.color : 'transparent'}};
-                          border-color: {{entity.options.digitLimit ? entity.color : Color.GREY}}">
+                          border-color: {{entity.options.digitLimit ? entity.color : Color.GREY}};
+                          --bs-focus-ring-color: {{entity.color}}4C;">
                     </div>
                   </fieldset>
                   <fieldset formArrayName="customOperations" class="d-grid">
@@ -140,6 +148,7 @@ import { v4 as generateUUID } from 'uuid';
                           data-iconBase="bi bi-" data-width="fit" data-size="5">
                           @for(operator of Operators; track $index){
                             <option [value]="operator" [attr.data-icon]="operator">aaaa</option>
+
                             <!-- <option [value]="operator" [attr.data-content]="'<i class=bi bi-{{operator}}></i>'"></option> -->
                           }
                         </select>
@@ -149,14 +158,14 @@ import { v4 as generateUUID } from 'uuid';
                         <!-- Color picker -->
                         <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="colorPicker" title="Lista de colores">
                         <!-- Delete Custom Operation -->
-                        <span type="button" class="position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
+                        <button type="button" class="btn btn-danger position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
                           (click)="deleteCustomOperation(entityIndex, $index)" style="z-index: 10;">
                           <i class="bi bi-{{Operator.MULTIPLICATION}}-lg"  style="margin: -3px"></i>
-                        </span>
+                        </button>
                       </div>
                     }
-                    <button type="button" class="btn btn-{{edit ? 'warning' : 'primary'}}" (click)="addCustomOperation(entityIndex)"
-                      style="background-color: {{entity.color}}; border-color: {{entity.color}}">
+                    <button type="button" class="btn btn-{{edit ? 'warning' : 'primary'}} focus-ring" (click)="addCustomOperation(entityIndex)"
+                      style="background-color: {{entity.color}}; border-color: {{entity.color}}; --bs-focus-ring-color: {{entity.color}}7F;">
                       <i class="bi bi-{{Operator.ADDITION}}-lg"> Añadir operación</i>
                     </button>
                   </fieldset>
@@ -179,6 +188,8 @@ import { v4 as generateUUID } from 'uuid';
 export class AddCalculatorFormComponent implements OnInit {
 
   // TODO Validaciones
+  // TODO Arraglar los select con imgs
+
 
   // Initial config
   modalId = input.required<string>();
