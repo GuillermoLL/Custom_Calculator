@@ -40,8 +40,8 @@ import { v4 as generateUUID } from 'uuid';
             <div class="accordion-item position-relative" [formGroupName]="entityIndex">
               <!-- Accordion header -->
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button"
-                  style="color: {{entity.color}}; border-color: {{entity.color}}; background-color: transparent;"
+                <button class="accordion-button collapsed focus-ring" type="button"
+                  style="color: {{entity.color}}; border-color: {{entity.color}}; background-color: transparent; --bs-focus-ring-color: {{entity.color}}7F"
                   data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+entityIndex" aria-expanded="false" [attr.aria-controls]="'collapse'+entityIndex">
                   <div class="d-flex justify-content-between w-100">
                     <div class="d-flex gap-3">
@@ -75,7 +75,7 @@ import { v4 as generateUUID } from 'uuid';
                         class="btn btn-primary form-control focus-ring"
                         style="background-color: {{entity.color}}; border-color: {{entity.color}}; --bs-focus-ring-color: {{Color.BLUE}}7F;"
                       >
-                        <i class="dropdown-item bi bi-{{entity.icon}}"></i>
+                        <i class="dropdown-item bi bi-{{entity.icon ? entity.icon : 'caret-down'}}"></i>
                       </button>
                       <ul class="dropdown-menu">
                         @for(icon of Icons; track $index){
@@ -339,8 +339,8 @@ export class AddCalculatorFormComponent implements OnInit {
     this.entityList.push(
       this.fb.group({
         id: this.fb.control(generateUUID(), [Validators.required]),
-        name: this.fb.control(null, [Validators.required]),
-        icon: this.fb.control(Icon.HEART),
+        name: this.fb.control(null),
+        icon: this.fb.control(null),
         color: this.fb.control(this.editMode() ? Color.ORANGE : Color.PURPLE, [Validators.required]),
         resultDefault: this.fb.control(0, [Validators.required]),
         resultCurrent: this.fb.control(0, [Validators.required]),
@@ -387,12 +387,16 @@ export class AddCalculatorFormComponent implements OnInit {
     if (this.myForm?.valid) {
       const id = this.myForm?.get('id')?.value;
       const name = this.myForm?.get('name')?.value || this.editMode() ? this.myForm?.get('name')?.value : 'Nueva calculadora';
-      this.entityList.controls.forEach((elm) => {
+      this.entityList.controls.forEach((entityControl) => {
         // If modify resultDefault modify resultCurrent equal
-        if (elm.get('resultDefault')?.dirty)
-          elm.get('resultCurrent')?.setValue(elm.get('resultDefault')?.value);
+        if (entityControl.get('resultDefault')?.dirty)
+          entityControl.get('resultCurrent')?.setValue(entityControl.get('resultDefault')?.value);
 
-        return elm;
+        // If name is null set value Nuevo elemento
+        if (!entityControl.get('name')?.value)
+          entityControl.get('name')?.setValue('Nuevo elemento');
+
+        return entityControl;
       });
 
       const entity = this.entityList.value;
