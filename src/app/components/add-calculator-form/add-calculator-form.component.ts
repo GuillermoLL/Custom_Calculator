@@ -40,8 +40,8 @@ import { v4 as generateUUID } from 'uuid';
             <div class="accordion-item position-relative" [formGroupName]="entityIndex">
               <!-- Accordion header -->
               <h2 class="accordion-header">
-                <button class="accordion-button collapsed focus-ring" type="button"
-                  style="color: {{entity.color}}; border-color: {{entity.color}}; background-color: transparent; --bs-focus-ring-color: {{entity.color}}4C;"
+                <button class="accordion-button collapsed" type="button"
+                  style="color: {{entity.color}}; border-color: {{entity.color}}; background-color: transparent;"
                   data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+entityIndex" aria-expanded="false" [attr.aria-controls]="'collapse'+entityIndex">
                   <div class="d-flex justify-content-between w-100">
                     <div class="d-flex gap-3">
@@ -70,7 +70,7 @@ import { v4 as generateUUID } from 'uuid';
                 <div class="accordion-body">
                   <div class="mb-3 d-flex justify-content-center gap-2">
                     <!-- Icons List -->
-                    <div class="dropdown border border-1 rounded-2">
+                    <div class="dropdown border border-1 rounded-3">
                       <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
                         class="btn btn-primary form-control focus-ring"
                         style="background-color: {{entity.color}}; border-color: {{entity.color}}; --bs-focus-ring-color: {{Color.BLUE}}7F;"
@@ -91,7 +91,7 @@ import { v4 as generateUUID } from 'uuid';
                     <input type="text" formControlName="name" placeholder="Nombre"
                       class="form-control" style="color: {{entity.color}};">
                     <!-- Result Default -->
-                    <input id="resultDefault" class="form-control" type="number" min="0" style="color: {{entity.color}}"
+                    <input id="resultDefault" class="form-control" type="number" min="0" step="0" style="color: {{entity.color}}"
                         formControlName="resultDefault" placeholder="Resultado">
                   </div>
                   <fieldset formGroupName="options" class="mb-3">
@@ -148,14 +148,14 @@ import { v4 as generateUUID } from 'uuid';
                   </fieldset>
                   <fieldset formArrayName="customOperations" class="d-grid">
                     <legend>Operaciones personalizadas</legend>
-                    <div class="row">
+                    <div class="row gap-3 mx-1 mb-3">
                       @for(customOperation of entity.customOperations; track customOperationsIndex; let customOperationsIndex = $index){
-                        <div [formGroupName]="customOperationsIndex" class="input-group mb-3 position-relative p-0 col">
+                        <div [formGroupName]="customOperationsIndex" class="input-group position-relative p-0 col">
                           <!-- Operators List -->
-                          <div class="dropdown border border-1 rounded-start-2">
+                          <div class="dropdown border border-1 rounded-start-3">
                             <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                              class="btn btn-primary focus-ring form-control rounded-0 rounded-start-2"
-                              style="background-color: {{customOperation.color}}; border-color: {{customOperation.color}}; --bs-focus-ring-color: {{customOperation.color}}7F;"
+                              class="btn btn-primary form-control rounded-0 rounded-start-2"
+                              style="background-color: {{customOperation.color}}; border-color: {{customOperation.color}}; height: 40px;"
                             >
                               <i class="dropdown-item bi bi-{{customOperation.operator}}-lg"></i>
                             </button>
@@ -166,7 +166,7 @@ import { v4 as generateUUID } from 'uuid';
                             </ul>
                           </div>
                           <!-- Number To Apply -->
-                          <input id="numberToApply" class="form-control text-center" type="number" min="0"
+                          <input id="numberToApply" class="form-control text-center" type="number" step="0" min="0"
                             formControlName="numberToApply" placeholder="Número">
                           <!-- Color picker -->
                           <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="operationsColorPicker" title="Lista de colores">
@@ -202,6 +202,8 @@ import { v4 as generateUUID } from 'uuid';
 export class AddCalculatorFormComponent implements OnInit {
 
   // TODO Validaciones
+  // TODO customOperator hacer en grid
+  //! TODO los colores al seleccionar un input en el formulario cada uno tiene uno
   //! TODO al borrar un customOperator, borra el ultimo añadido - Es por el id que no tiene y usa el $index
 
 
