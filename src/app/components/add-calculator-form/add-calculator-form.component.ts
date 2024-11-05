@@ -68,23 +68,30 @@ import { v4 as generateUUID } from 'uuid';
               <!-- Accordion Body -->
               <div [id]="'collapse'+entityIndex" class="accordion-collapse collapse" data-bs-parent="accordionEntities" >
                 <div class="accordion-body">
-                  <div class="mb-3 d-flex justify-content-center">
+                  <div class="mb-3 d-flex justify-content-center gap-2">
                     <!-- Icons List -->
-                    <select class="selectpicker form-control me-3" aria-label="Lista de iconos" formControlName="icon"
-                      data-iconBase="bi bi-" data-width="fit" data-size="5">
-                      @for(icon of Icons; track $index){
-                        <option [value]="icon" [attr.data-icon]="icon">aaaa</option>
-                      }
-                    </select>
+                    <div class="dropdown border border-1 rounded-2">
+                      <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                        class="btn btn-primary form-control focus-ring"
+                        style="background-color: {{entity.color}}; border-color: {{entity.color}}; --bs-focus-ring-color: {{Color.BLUE}}7F;"
+                      >
+                        <i class="dropdown-item bi bi-{{entity.icon}}"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        @for(icon of Icons; track $index){
+                          <li><i class="dropdown-item bi bi-{{icon}}" (click)="setEntityIcon(entityIndex, icon)"></i></li>
+                        }
+                      </ul>
+                    </div>
                     <!-- Color picker -->
-                    <input type="color" class="form-control p-0" formControlName="color" id="colorPicker" title="Lista de colores">
+                    <input type="color" class="form-control p-0" formControlName="color" id="entityColorPicker" title="Lista de colores">
                   </div>
                   <div class="input-group mb-3">
                     <!-- Input Name -->
                     <input type="text" formControlName="name" placeholder="Nombre"
                       class="form-control" style="color: {{entity.color}};">
                     <!-- Result Default -->
-                    <input id="resultDefault" class="form-control" type="number" style="color: {{entity.color}}"
+                    <input id="resultDefault" class="form-control" type="number" min="0" style="color: {{entity.color}}"
                         formControlName="resultDefault" placeholder="Resultado">
                   </div>
                   <fieldset formGroupName="options" class="mb-3">
@@ -141,29 +148,36 @@ import { v4 as generateUUID } from 'uuid';
                   </fieldset>
                   <fieldset formArrayName="customOperations" class="d-grid">
                     <legend>Operaciones personalizadas</legend>
-                    @for(customOperation of entity.customOperations; track $index){
-                      <div [formGroupName]="$index" class="input-group mb-3 position-relative ">
-                        <!-- Operators List -->
-                        <select class="selectpicker form-control" aria-label="Lista de operadores" formControlName="operator"
-                          data-iconBase="bi bi-" data-width="fit" data-size="5">
-                          @for(operator of Operators; track $index){
-                            <option [value]="operator" [attr.data-icon]="operator">aaaa</option>
-
-                            <!-- <option [value]="operator" [attr.data-content]="'<i class=bi bi-{{operator}}></i>'"></option> -->
-                          }
-                        </select>
-                        <!-- Number To Apply -->
-                        <input id="numberToApply" class="form-control text-center" type="number"
-                          formControlName="numberToApply" placeholder="Número">
-                        <!-- Color picker -->
-                        <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="colorPicker" title="Lista de colores">
-                        <!-- Delete Custom Operation -->
-                        <button type="button" class="btn btn-danger position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
-                          (click)="deleteCustomOperation(entityIndex, $index)" style="z-index: 10;">
-                          <i class="bi bi-{{Operator.MULTIPLICATION}}-lg"  style="margin: -3px"></i>
-                        </button>
-                      </div>
-                    }
+                    <div class="row">
+                      @for(customOperation of entity.customOperations; track customOperationsIndex; let customOperationsIndex = $index){
+                        <div [formGroupName]="customOperationsIndex" class="input-group mb-3 position-relative p-0 col">
+                          <!-- Operators List -->
+                          <div class="dropdown border border-1 rounded-start-2">
+                            <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                              class="btn btn-primary focus-ring form-control rounded-0 rounded-start-2"
+                              style="background-color: {{customOperation.color}}; border-color: {{customOperation.color}}; --bs-focus-ring-color: {{customOperation.color}}7F;"
+                            >
+                              <i class="dropdown-item bi bi-{{customOperation.operator}}-lg"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                              @for(operator of Operators; track $index){
+                                <li><i class="dropdown-item bi bi-{{operator}}-lg" (click)="setCustomOperationsOperator(entityIndex, customOperationsIndex, operator)"></i></li>
+                              }
+                            </ul>
+                          </div>
+                          <!-- Number To Apply -->
+                          <input id="numberToApply" class="form-control text-center" type="number" min="0"
+                            formControlName="numberToApply" placeholder="Número">
+                          <!-- Color picker -->
+                          <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="operationsColorPicker" title="Lista de colores">
+                          <!-- Delete Custom Operation -->
+                          <button type="button" class="btn btn-danger position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
+                            (click)="deleteCustomOperation(entityIndex, customOperationsIndex)" style="z-index: 10;">
+                            <i class="bi bi-{{Operator.MULTIPLICATION}}-lg"  style="margin: -3px"></i>
+                          </button>
+                        </div>
+                      }
+                    </div>
                     <button type="button" class="btn btn-{{edit ? 'warning' : 'primary'}} focus-ring" (click)="addCustomOperation(entityIndex)"
                       style="background-color: {{entity.color}}; border-color: {{entity.color}}; --bs-focus-ring-color: {{entity.color}}7F;">
                       <i class="bi bi-{{Operator.ADDITION}}-lg"> Añadir operación</i>
@@ -188,7 +202,7 @@ import { v4 as generateUUID } from 'uuid';
 export class AddCalculatorFormComponent implements OnInit {
 
   // TODO Validaciones
-  // TODO Arraglar los select con imgs
+  //! TODO al borrar un customOperator, borra el ultimo añadido - Es por el id que no tiene y usa el $index
 
 
   // Initial config
@@ -228,6 +242,15 @@ export class AddCalculatorFormComponent implements OnInit {
 
   get Color() {
     return Color
+  }
+
+  protected setCustomOperationsOperator(entityIndex: number, customOperationsIndex: number, value: string) {
+    const customOperations = this.entityList.at(entityIndex).get('customOperations') as FormArray;
+    customOperations.at(customOperationsIndex)?.get('operator')?.setValue(value);
+  }
+
+  protected setEntityIcon(entityIndex: number, value: string) {
+    this.entityList.at(entityIndex).get('icon')?.setValue(value);
   }
 
   ngOnInit(): void {
@@ -337,13 +360,14 @@ export class AddCalculatorFormComponent implements OnInit {
   }
 
   protected addCustomOperation(entityIndex: number): void {
-    const customOperations = this.entityList.at(entityIndex)?.get('customOperations') as FormArray;
+    const entity = this.entityList.at(entityIndex) as FormGroup;
+    const customOperations = entity?.get('customOperations') as FormArray;
 
     customOperations.push(
       this.fb.group({
         operator: this.fb.control(Operator.ADDITION, [Validators.required]),
         numberToApply: this.fb.control(0, [Validators.required]),
-        color: this.fb.control(Color.ORANGE, [Validators.required]),
+        color: this.fb.control(entity.get('color')?.value, [Validators.required]),
       })
     );
   }

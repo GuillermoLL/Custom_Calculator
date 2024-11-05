@@ -13,5 +13,14 @@ input[type="color"]::-webkit-color-swatch {
 }
 input[type="checkbox"].form-check-input:focus {
     --bs-form-switch-bg: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='rgba(255,255,255)'/></svg>");
+}
 
+.dropdown-menu {
+    min-width: auto;
+    max-height: 146px;
+    overflow-y: auto;
+}
+
+#operationsColorPicker {
+    max-width: 50px;
 }
