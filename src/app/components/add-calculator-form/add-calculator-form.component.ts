@@ -203,6 +203,7 @@ export class AddCalculatorFormComponent implements OnInit {
 
   // TODO Validaciones
   // TODO customOperator hacer en grid
+  // TODO siempre que entres a crear o editar que este el arcodeon cerrado
   //! TODO los colores al seleccionar un input en el formulario cada uno tiene uno
   //! TODO al borrar un customOperator, borra el ultimo añadido - Es por el id que no tiene y usa el $index
 
