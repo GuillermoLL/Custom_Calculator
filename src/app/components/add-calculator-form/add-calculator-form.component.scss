@@ -15,17 +15,6 @@ input[type="checkbox"].form-check-input:focus {
     --bs-form-switch-bg: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='rgba(255,255,255)'/></svg>");
 }
 
-.dropdown-menu {
-    min-width: auto;
-    max-height: 146px;
-    overflow-y: auto;
-}
-
-#operationsColorPicker {
-    max-width: 50px;
-    height: auto;
-}
-    
 // Prevents arrows of the input numbers
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -36,4 +25,27 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     /* Firefox */
     -moz-appearance: textfield;
+}
+.dropdown-menu {
+    min-width: auto;
+    max-height: 146px;
+    overflow-y: auto;
+}
+
+.container-customOperations {
+    width: auto;
+
+    #numberToApply {
+        max-width: 86px;
+        min-width: 86px;
+    }
+    #operationsColorPicker {
+        min-width: 45px;
+        max-width: 45px;
+        height: auto;
+    }
+}
+.add-operation-btn {
+    width: auto;
+    min-width: 173px;
 }

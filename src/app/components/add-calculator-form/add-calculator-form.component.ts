@@ -146,11 +146,11 @@ import { v4 as generateUUID } from 'uuid';
                           --bs-focus-ring-color: {{entity.color}}4C;">
                     </div>
                   </fieldset>
-                  <fieldset formArrayName="customOperations" class="d-grid">
+                  <fieldset formArrayName="customOperations">
                     <legend>Operaciones personalizadas</legend>
-                    <div class="row gap-3 mx-1 mb-3">
+                    <div class="row row-cols-3 justify-content-center gap-3 mx-1 mb-3 ">
                       @for(customOperation of entity.customOperations; track customOperationsIndex; let customOperationsIndex = $index){
-                        <div [formGroupName]="customOperationsIndex" class="input-group position-relative p-0 col">
+                        <div [formGroupName]="customOperationsIndex" class="container-customOperations input-group position-relative p-0 col">
                           <!-- Operators List -->
                           <div class="dropdown border border-1 rounded-start-3">
                             <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -177,11 +177,11 @@ import { v4 as generateUUID } from 'uuid';
                           </button>
                         </div>
                       }
+                      <button type="button" class="add-operation-btn btn btn-{{edit ? 'warning' : 'primary'}} focus-ring" (click)="addCustomOperation(entityIndex)"
+                        style="background-color: {{entity.color}}; border-color: {{entity.color}}; --bs-focus-ring-color: {{entity.color}}7F;">
+                        <i class="bi bi-{{Operator.ADDITION}}-lg"> Añadir operación</i>
+                      </button>
                     </div>
-                    <button type="button" class="btn btn-{{edit ? 'warning' : 'primary'}} focus-ring" (click)="addCustomOperation(entityIndex)"
-                      style="background-color: {{entity.color}}; border-color: {{entity.color}}; --bs-focus-ring-color: {{entity.color}}7F;">
-                      <i class="bi bi-{{Operator.ADDITION}}-lg"> Añadir operación</i>
-                    </button>
                   </fieldset>
                 </div>
               </div>
@@ -202,7 +202,6 @@ import { v4 as generateUUID } from 'uuid';
 export class AddCalculatorFormComponent implements OnInit {
 
   // TODO Validaciones
-  // TODO customOperator hacer en grid
   // TODO siempre que entres a crear o editar que este el arcodeon cerrado
   //! TODO los colores al seleccionar un input en el formulario cada uno tiene uno
   //! TODO al borrar un customOperator, borra el ultimo añadido - Es por el id que no tiene y usa el $index
@@ -333,6 +332,7 @@ export class AddCalculatorFormComponent implements OnInit {
       this.initEditForm();
     } else {
       this.myForm?.reset();
+      this.entityList.clear();
     }
   }
 
