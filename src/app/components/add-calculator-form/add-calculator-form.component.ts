@@ -203,6 +203,8 @@ export class AddCalculatorFormComponent implements OnInit {
 
   // TODO Validaciones
   // TODO siempre que entres a crear o editar que este el arcodeon cerrado
+  //? Valor digitLimit -> depende clearOperationWhenSelectEntity
+  //? Pero valor clearOperationWhenSelectEntity !-> NO depende digitLimit 
   //! TODO los colores al seleccionar un input en el formulario cada uno tiene uno
   //! TODO al borrar un customOperator, borra el ultimo añadido - Es por el id que no tiene y usa el $index
 
