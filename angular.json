@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-webapp": {
+    "custom-calculator": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -18,7 +18,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/angular-webapp",
+            "outputPath": "dist/custom-calculator",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -52,7 +52,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "1.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -74,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "angular-webapp:build:production"
+              "buildTarget": "custom-calculator:build:production"
             },
             "development": {
-              "buildTarget": "angular-webapp:build:development"
+              "buildTarget": "custom-calculator:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -111,6 +111,14 @@
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"
             ]
+          }
+        },
+        "deploy": {
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "dist/custom-calculator",
+            "netlifyToken": "",
+            "siteId": ""
           }
         }
       }
