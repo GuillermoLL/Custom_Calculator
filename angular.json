@@ -65,7 +65,13 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -118,7 +124,7 @@
           "options": {
             "outputPath": "dist/custom-calculator",
             "netlifyToken": "",
-            "siteId": ""
+            "siteId": "8a538f77-fee1-4be6-b1b3-1a69373cccad"
           }
         }
       }
