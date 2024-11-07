@@ -27,8 +27,6 @@ import { CalculatorService } from '../../services';
 export class BoardComponent implements OnInit {
   addModalId = 'addModalId';
 
-  // TODO los datos no se sincronizan correctamente, hacer servicio con observables *
-
   constructor(private calculatorService: CalculatorService) { }
 
   ngOnInit(): void {

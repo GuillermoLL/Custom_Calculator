@@ -429,10 +429,8 @@ export class AddCalculatorFormComponent implements OnInit {
   private sendCalculator(calculator: Calculator): void {
     if (this.editMode()) {
       this.calculatorService.editCalculator(calculator);
-      // this.editEventEmiter.emit(calculator)
     } else {
       this.calculatorService.addCalculator(calculator);
-      // this.addEventEmiter.emit(calculator);
       this.clearForm();
     }
 

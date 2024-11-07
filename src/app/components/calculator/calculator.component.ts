@@ -362,9 +362,4 @@ export class CalculatorComponent {
   protected handleDeleteEventEmiter(): void {
     this.calculatorService.deleteCalculator(this.data().id);
   }
-
-  // protected handleEditEventEmiter(data: Calculator): void {
-  //   this.entitySelected = undefined; //! TODO tiene que hacer el cambio en tiempo real, que no cliquee para actualizar
-  //   this.editEventEmiter.emit(data);
-  // }
 }
