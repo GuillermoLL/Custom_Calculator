@@ -3,6 +3,7 @@ import { Calculator, Entity, OtherOperator, Operator, Options } from './calculat
 import { CustomModalComponent } from "../../shared/custom-modal/custom-modal.component";
 import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculator-form.component";
 import { CalculatorService } from '../../services';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-calculator',
@@ -178,6 +179,7 @@ import { CalculatorService } from '../../services';
     <app-add-calculator-form [modalId]="editModalId"
       [data]="calculator"
       [editMode]='true'
+      [$editedFormInCalculator]="$editedFormInCalculator"
       (closeEditEvent)="handleCloseEditEventEmiter()"
     ></app-add-calculator-form>
     <app-custom-modal  [modalId]="deleteModalId"
@@ -195,6 +197,7 @@ export class CalculatorComponent {
 
   // Calculator data 
   data = input.required<Calculator>();
+  $editedFormInCalculator = new Subject<boolean>();
   numbers: (number | string)[] = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0, '00', '000'];
   operators: Operator[] = [Operator.ADDITION, Operator.SUBTRACTION, Operator.MULTIPLICATION, Operator.DIVISION];
 
@@ -348,6 +351,8 @@ export class CalculatorComponent {
     }
 
     this.entitySelected!.resultCurrent = result;
+    this.$editedFormInCalculator.next(true);
+    // Editar desde el servicio
   }
 
   private resetOperation(): void {
@@ -360,7 +365,7 @@ export class CalculatorComponent {
   // **********************************************
 
   protected handleCloseEditEventEmiter(): void {
-    // Close selected entity
+    // Close selected entity on Edit Modal close
     this.entitySelected = undefined;
   }
 

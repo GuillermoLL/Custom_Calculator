@@ -1,7 +1,7 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnDestroy, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { Calculator, Color, Icon, Operation, Operator } from '../calculator';
 import { CustomModalComponent } from '../../shared';
 import { v4 as generateUUID } from 'uuid';
@@ -10,7 +10,7 @@ import { CalculatorService } from '../../services';
 @Component({
   selector: 'app-add-calculator-form',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [CommonModule, CustomModalComponent, ReactiveFormsModule],
   styleUrl: './add-calculator-form.component.scss',
   template: `
@@ -200,7 +200,7 @@ import { CalculatorService } from '../../services';
     </app-custom-modal>
   `
 })
-export class AddCalculatorFormComponent implements OnInit {
+export class AddCalculatorFormComponent implements OnInit, OnDestroy {
 
   // TODO Validaciones
   // TODO siempre que entres a crear o editar que este el arcodeon cerrado
@@ -223,11 +223,13 @@ export class AddCalculatorFormComponent implements OnInit {
   // Form data
   private fb = new FormBuilder();
   protected myForm?: FormGroup;
-  private myFormChangeSubscribe!: Subscription;
+  private $myFormChangeSubscribe!: Subscription;
 
   // Event Emiters
   disableAcceptButton = new BehaviorSubject<boolean>(true);
   closeEditEvent = output<any>();
+  $editedFormInCalculator = input<Subject<boolean>>();
+  $editedFormInCalculatorSubscribe!: Subscription;
 
   get entityList(): FormArray<FormGroup> {
     return this.myForm?.get('entity') as FormArray
@@ -268,11 +270,17 @@ export class AddCalculatorFormComponent implements OnInit {
     if (this.editMode()) {
       this.headerText = `Editar ${this.data()?.name}`;
       this.submitText = 'Editar';
+      this.$editedFormInCalculator()?.subscribe(() => this.initEditForm());
       this.initEditForm();
     }
     else {
       this.initNewForm();
     }
+  }
+
+  ngOnDestroy() {
+    this.$editedFormInCalculatorSubscribe.unsubscribe();
+    this.$myFormChangeSubscribe.unsubscribe();
   }
 
   private initNewForm(): void {
@@ -334,7 +342,7 @@ export class AddCalculatorFormComponent implements OnInit {
   // **********************************************
 
   protected clearForm(): void {
-    this.myFormChangeSubscribe.unsubscribe();
+    this.$myFormChangeSubscribe.unsubscribe();
     if (this.editMode()) {
       this.initEditForm();
     } else {
@@ -343,8 +351,7 @@ export class AddCalculatorFormComponent implements OnInit {
   }
 
   private subscribeToFormChanges() {
-    this.myFormChangeSubscribe = this.myForm!.valueChanges.subscribe((elm) => {
-      console.log(elm);
+    this.$myFormChangeSubscribe = this.myForm!.valueChanges.subscribe((elm) => {
       this.myForm?.valid ? this.disableAcceptButton.next(false) : this.disableAcceptButton.next(true);
     })
   }
