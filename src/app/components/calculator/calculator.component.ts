@@ -367,6 +367,7 @@ export class CalculatorComponent {
   protected handleCloseEditEventEmiter(): void {
     // Close selected entity on Edit Modal close
     this.entitySelected = undefined;
+    this.operatorSelected = undefined;
   }
 
   protected handleDeleteEventEmiter(): void {
