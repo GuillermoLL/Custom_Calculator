@@ -226,7 +226,7 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
   private $myFormChangeSubscribe!: Subscription;
 
   // Event Emiters
-  disableAcceptButton = new BehaviorSubject<boolean>(true);
+  disableAcceptButton = new BehaviorSubject<boolean>(false);
   closeEditEvent = output<any>();
   $editedFormInCalculator = input<Subject<boolean>>();
   $editedFormInCalculatorSubscribe!: Subscription;
@@ -276,11 +276,6 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
     else {
       this.initNewForm();
     }
-  }
-
-  ngOnDestroy() {
-    this.$editedFormInCalculatorSubscribe.unsubscribe();
-    this.$myFormChangeSubscribe.unsubscribe();
   }
 
   private initNewForm(): void {
@@ -442,5 +437,10 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
       this.calculatorService.addCalculator(calculator);
       this.clearForm();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.$editedFormInCalculatorSubscribe ? this.$editedFormInCalculatorSubscribe.unsubscribe() : null;
+    this.$myFormChangeSubscribe ? this.$myFormChangeSubscribe.unsubscribe() : null;
   }
 }
