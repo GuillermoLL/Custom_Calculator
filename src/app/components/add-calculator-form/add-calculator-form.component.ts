@@ -1,10 +1,11 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Calculator, Color, Icon, Operation, Operator } from '../calculator';
 import { CustomModalComponent } from '../../shared';
 import { v4 as generateUUID } from 'uuid';
+import { CalculatorService } from '../../services';
 
 @Component({
   selector: 'app-add-calculator-form',
@@ -222,10 +223,9 @@ export class AddCalculatorFormComponent implements OnInit {
   // Form data
   private fb = new FormBuilder();
   protected myForm?: FormGroup;
+  private myFormChangeSubscribe!: Subscription;
 
   // Event Emiters
-  editEventEmiter = output<Calculator>();
-  addEventEmiter = output<Calculator>();
   disableAcceptButton = new BehaviorSubject<boolean>(true);
 
   get entityList(): FormArray<FormGroup> {
@@ -257,6 +257,12 @@ export class AddCalculatorFormComponent implements OnInit {
     this.entityList.at(entityIndex).get('icon')?.setValue(value);
   }
 
+  // **********************************************
+  // Initialization Form
+  // **********************************************
+
+  constructor(private calculatorService: CalculatorService) { }
+
   ngOnInit(): void {
     if (this.editMode()) {
       this.headerText = `Editar ${this.data()?.name}`;
@@ -266,14 +272,7 @@ export class AddCalculatorFormComponent implements OnInit {
     else {
       this.initNewForm();
     }
-
-    this.myForm?.valueChanges.subscribe((elm) => {
-      this.myForm?.valid ? this.disableAcceptButton.next(false) : this.disableAcceptButton.next(true);
-    })
   }
-  // **********************************************
-  // Initialization Form
-  // **********************************************
 
   private initNewForm(): void {
     this.myForm = this.fb.group({
@@ -281,6 +280,8 @@ export class AddCalculatorFormComponent implements OnInit {
       name: this.fb.control(this.data().name),
       entity: this.fb.array([])
     });
+
+    this.subscribeToFormChanges();
   }
 
   private initEditForm(): void {
@@ -323,6 +324,8 @@ export class AddCalculatorFormComponent implements OnInit {
       name: this.fb.control(this.data().name),
       entity: entityFormArray
     });
+
+    this.subscribeToFormChanges();
   }
 
   // **********************************************
@@ -330,12 +333,19 @@ export class AddCalculatorFormComponent implements OnInit {
   // **********************************************
 
   protected clearForm(): void {
+    this.myFormChangeSubscribe.unsubscribe();
     if (this.editMode()) {
       this.initEditForm();
     } else {
-      this.myForm?.reset();
-      this.entityList.clear();
+      this.initNewForm();
     }
+  }
+
+  private subscribeToFormChanges() {
+    this.myFormChangeSubscribe = this.myForm!.valueChanges.subscribe((elm) => {
+      console.log(elm);
+      this.myForm?.valid ? this.disableAcceptButton.next(false) : this.disableAcceptButton.next(true);
+    })
   }
 
   protected addEntity(): void {
@@ -411,15 +421,18 @@ export class AddCalculatorFormComponent implements OnInit {
       });
     }
     else {
+      // TODO toast o mensajes de error en el formulario
       console.error(this.myForm?.errors);
     }
   }
 
   private sendCalculator(calculator: Calculator): void {
     if (this.editMode()) {
-      this.editEventEmiter.emit(calculator)
+      this.calculatorService.editCalculator(calculator);
+      // this.editEventEmiter.emit(calculator)
     } else {
-      this.addEventEmiter.emit(calculator);
+      this.calculatorService.addCalculator(calculator);
+      // this.addEventEmiter.emit(calculator);
       this.clearForm();
     }
 

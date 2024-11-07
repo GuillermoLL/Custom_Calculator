@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Calculator, Entity, OtherOperator, Operator, Options } from './calculator.type';
 import { CustomModalComponent } from "../../shared/custom-modal/custom-modal.component";
 import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculator-form.component";
+import { CalculatorService } from '../../services';
 
 @Component({
   selector: 'app-calculator',
@@ -177,7 +178,6 @@ import { AddCalculatorFormComponent } from "../add-calculator-form/add-calculato
     <app-add-calculator-form [modalId]="editModalId"
       [data]="calculator"
       [editMode]='true'
-      (editEventEmiter)="this.handleEditEventEmiter($event)"
     ></app-add-calculator-form>
     <app-custom-modal  [modalId]="deleteModalId"
       [headerText]="'Eliminar ' + calculator.name"
@@ -213,16 +213,14 @@ export class CalculatorComponent {
     clearOperationWhenSelectEntity: false
   };
 
-  // Event Emiters
-  deleteEventEmiter = output<string>();
-  editEventEmiter = output<Calculator>();
-
   get getOperator() {
     return {
       ...Operator,
       ...OtherOperator,
     };
   }
+
+  constructor(private calculatorService: CalculatorService) { }
 
   // **********************************************
   // Handles events
@@ -362,11 +360,11 @@ export class CalculatorComponent {
   // **********************************************
 
   protected handleDeleteEventEmiter(): void {
-    this.deleteEventEmiter.emit(this.data().id);
+    this.calculatorService.deleteCalculator(this.data().id);
   }
 
-  protected handleEditEventEmiter(data: Calculator): void {
-    this.entitySelected = undefined; //! TODO tiene que hacer el cambio en tiempo real, que no cliquee para actualizar
-    this.editEventEmiter.emit(data);
-  }
+  // protected handleEditEventEmiter(data: Calculator): void {
+  //   this.entitySelected = undefined; //! TODO tiene que hacer el cambio en tiempo real, que no cliquee para actualizar
+  //   this.editEventEmiter.emit(data);
+  // }
 }

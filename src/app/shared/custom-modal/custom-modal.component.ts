@@ -56,6 +56,7 @@ export class CustomModalComponent implements OnInit {
   cancelText = input<string>('Cancelar');
   cancelEvent = output<number>();
 
+  // If true, when click out of modal then close
   backdropStatic = input<boolean>(false);
 
   ngOnInit(): void {
