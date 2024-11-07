@@ -178,6 +178,7 @@ import { CalculatorService } from '../../services';
     <app-add-calculator-form [modalId]="editModalId"
       [data]="calculator"
       [editMode]='true'
+      (closeEditEvent)="handleCloseEditEventEmiter()"
     ></app-add-calculator-form>
     <app-custom-modal  [modalId]="deleteModalId"
       [headerText]="'Eliminar ' + calculator.name"
@@ -349,7 +350,6 @@ export class CalculatorComponent {
     this.entitySelected!.resultCurrent = result;
   }
 
-
   private resetOperation(): void {
     this.numberToApply = '';
     this.operatorSelected = undefined;
@@ -358,6 +358,11 @@ export class CalculatorComponent {
   // **********************************************
   // Modal
   // **********************************************
+
+  protected handleCloseEditEventEmiter(): void {
+    // Close selected entity
+    this.entitySelected = undefined;
+  }
 
   protected handleDeleteEventEmiter(): void {
     this.calculatorService.deleteCalculator(this.data().id);

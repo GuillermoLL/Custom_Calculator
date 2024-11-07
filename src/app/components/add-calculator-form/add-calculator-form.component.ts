@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -227,6 +227,7 @@ export class AddCalculatorFormComponent implements OnInit {
 
   // Event Emiters
   disableAcceptButton = new BehaviorSubject<boolean>(true);
+  closeEditEvent = output<any>();
 
   get entityList(): FormArray<FormGroup> {
     return this.myForm?.get('entity') as FormArray
@@ -429,10 +430,10 @@ export class AddCalculatorFormComponent implements OnInit {
   private sendCalculator(calculator: Calculator): void {
     if (this.editMode()) {
       this.calculatorService.editCalculator(calculator);
+      this.closeEditEvent.emit(1);
     } else {
       this.calculatorService.addCalculator(calculator);
       this.clearForm();
     }
-
   }
 }
