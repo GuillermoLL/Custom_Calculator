@@ -15,7 +15,8 @@ export class CalculatorService {
   }
 
   private constructor() {
-    this.calculators = JSON.parse(sessionStorage.getItem('calculators') ?? '') ?? [{
+    const storage = sessionStorage.getItem('calculators');
+    this.calculators = storage ? JSON.parse(storage) : [{
       id: '25bd3460-9525-11ef-9a0e-1dcdfe04b99c',
       name: 'YuGiOh',
       entity: [{
@@ -140,7 +141,7 @@ export class CalculatorService {
           }
         ]
         }]
-    }]
+    }];
     this.$calculatorsSubject = new BehaviorSubject<Calculator[]>(this.calculators); 
   }
 
