@@ -9,24 +9,129 @@ export class CalculatorService {
 
   private calculators: Calculator[] = [{
     id: '25bd3460-9525-11ef-9a0e-1dcdfe04b99c',
-    name: 'Player 1',
+    name: 'YuGiOh',
     entity: [{
       id: 1,
       name: 'Vida',
-      color: Color.RED,
+      color: Color.BLUE,
       icon: Icon.HEART,
-      resultDefault: 100,
-      resultCurrent: 100,
+      resultDefault: 8000,
+      resultCurrent: 8000,
       options: {
-        numberOverflow: false,
+        numberOverflow: true,
         numberDecimals: false,
-        clearOperationWhenOperate: false,
-        clearOperationWhenSelectOperator: true,
+        clearOperationWhenOperate: true,
+        clearOperationWhenSelectOperator: false,
         digitLimit: true,
         clearOperationWhenSelectEntity: true
       },
-      customOperations: []
-    }]
+      customOperations: [
+        {
+          operator: Operator.ADDITION,
+          numberToApply: 500,
+          color: Color.GREEN,
+        },
+        {
+          operator: Operator.SUBTRACTION,
+          numberToApply: 500,
+          color: Color.RED,
+        }
+      ]
+    },
+      {
+        id: 2,
+        name: 'Rival',
+        color: Color.RED,
+        icon: Icon.HEART,
+        resultDefault: 8000,
+        resultCurrent: 8000,
+        options: {
+          numberOverflow: true,
+          numberDecimals: false,
+          clearOperationWhenOperate: true,
+          clearOperationWhenSelectOperator: false,
+          digitLimit: true,
+          clearOperationWhenSelectEntity: true
+        },
+        customOperations: [
+          {
+            operator: Operator.ADDITION,
+            numberToApply: 1000,
+            color: Color.GREEN,
+          },
+          {
+            operator: Operator.ADDITION,
+            numberToApply: 500,
+            color: Color.GREEN,
+          },
+          {
+            operator: Operator.SUBTRACTION,
+            numberToApply: 1000,
+            color: Color.RED,
+          },
+          {
+            operator: Operator.SUBTRACTION,
+            numberToApply: 500,
+            color: Color.RED,
+          }
+        ]
+      },
+      {
+        id: 3,
+        name: 'Hada',
+        color: Color.ORANGE,
+        icon: Icon.SPARKLE,
+        resultDefault: 0,
+        resultCurrent: 0,
+        options: {
+          numberOverflow: true,
+          numberDecimals: false,
+          clearOperationWhenOperate: true,
+          clearOperationWhenSelectOperator: false,
+          digitLimit: true,
+          clearOperationWhenSelectEntity: true
+        },
+        customOperations: [
+          {
+            operator: Operator.ADDITION,
+            numberToApply: 1,
+            color: Color.GREEN,
+          },
+          {
+            operator: Operator.SUBTRACTION,
+            numberToApply: 1,
+            color: Color.RED,
+          }
+        ]
+      },
+      {
+        id: 4,
+        name: 'Hada',
+        color: Color.PURPLE,
+        icon: Icon.MOON,
+        resultDefault: 0,
+        resultCurrent: 0,
+        options: {
+          numberOverflow: true,
+          numberDecimals: false,
+          clearOperationWhenOperate: true,
+          clearOperationWhenSelectOperator: false,
+          digitLimit: true,
+          clearOperationWhenSelectEntity: true
+        },
+        customOperations: [
+          {
+            operator: Operator.ADDITION,
+            numberToApply: 1,
+            color: Color.GREEN,
+          },
+          {
+            operator: Operator.SUBTRACTION,
+            numberToApply: 1,
+            color: Color.RED,
+          }
+        ]
+      }]
   },
   {
     id: '2ec844a0-9525-11ef-9a0e-1dcdfe04b99c',

@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
       <div class="input-group">
         <label class="form-control rounded-bottom-0">{{ calculator.name }}</label>
         <button class="btn btn-outline-warning border rounded-bottom-0" type="button"
+          (click)="this.$editedFormInCalculator.next(true);"
           data-bs-toggle="modal" [attr.data-bs-target]="'#' + editModalId">
           <i class="bi bi-pencil"></i>
         </button>
@@ -269,8 +270,9 @@ export class CalculatorComponent {
 
     if (this.numberToApply) {
       // Set '0's ever in right
-      let numbers = this.numberToApply.slice(0, this.numberToApply.indexOf('0'));
-      let ceros = this.numberToApply.slice(this.numberToApply.indexOf('0'));
+      const ceroIndex = this.numberToApply.indexOf('0') >= 0 ? this.numberToApply.indexOf('0') : 0;
+      let numbers = ceroIndex ? this.numberToApply.slice(0, ceroIndex) : this.numberToApply.slice(0);
+      let ceros = ceroIndex ? this.numberToApply.slice(ceroIndex) : '';
       num.match(/^0+$/) ? ceros += num : numbers += num;
 
       this.numberToApply = numbers + ceros;
@@ -351,7 +353,7 @@ export class CalculatorComponent {
     }
 
     this.entitySelected!.resultCurrent = result;
-    this.$editedFormInCalculator.next(true);
+    // this.$editedFormInCalculator.next(true);
     // Editar desde el servicio
   }
 
