@@ -202,14 +202,6 @@ import { CalculatorService } from '../../services';
 })
 export class AddCalculatorFormComponent implements OnInit, OnDestroy {
 
-  // TODO Validaciones
-  // TODO siempre que entres a crear o editar que este el arcodeon cerrado
-  //? Valor digitLimit -> depende clearOperationWhenSelectEntity
-  //? Pero valor clearOperationWhenSelectEntity !-> NO depende digitLimit 
-  //! TODO los colores al seleccionar un input en el formulario cada uno tiene uno
-  //! TODO al borrar un customOperator, borra el ultimo añadido - Es por el id que no tiene y usa el $index
-
-
   // Initial config
   modalId = input.required<string>();
   editMode = input<boolean>(false);
@@ -427,7 +419,6 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
       });
     }
     else {
-      // TODO toast o mensajes de error en el formulario
       console.error(this.myForm?.errors);
     }
   }
