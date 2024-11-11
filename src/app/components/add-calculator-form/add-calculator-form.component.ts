@@ -228,7 +228,7 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
   // Event Emiters
   disableAcceptButton = new BehaviorSubject<boolean>(false);
   closeEditEvent = output<any>();
-  $editedFormInCalculator = input<Subject<boolean>>();
+  $editedFormInCalculator = input<Subject<Calculator>>();
   $editedFormInCalculatorSubscribe!: Subscription;
 
   get entityList(): FormArray<FormGroup> {
@@ -270,7 +270,10 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
     if (this.editMode()) {
       this.headerText = `Editar ${this.data()?.name}`;
       this.submitText = 'Editar';
-      this.$editedFormInCalculator()?.subscribe(() => this.initEditForm());
+      this.$editedFormInCalculator()?.subscribe((calculator) => {
+        this.initEditForm();
+        this.calculatorService.editCalculator(calculator);
+      });
       this.initEditForm();
     }
     else {

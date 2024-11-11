@@ -24,7 +24,7 @@ import { Subject } from 'rxjs';
       <div class="input-group">
         <label class="form-control rounded-bottom-0">{{ calculator.name }}</label>
         <button class="btn btn-outline-warning border rounded-bottom-0" type="button"
-          (click)="this.$editedFormInCalculator.next(true);"
+          (click)="this.$editedFormInCalculator.next(calculator);"
           data-bs-toggle="modal" [attr.data-bs-target]="'#' + editModalId">
           <i class="bi bi-pencil"></i>
         </button>
@@ -198,7 +198,7 @@ export class CalculatorComponent {
 
   // Calculator data 
   data = input.required<Calculator>();
-  $editedFormInCalculator = new Subject<boolean>();
+  $editedFormInCalculator = new Subject<Calculator>();
   numbers: (number | string)[] = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0, '00', '000'];
   operators: Operator[] = [Operator.ADDITION, Operator.SUBTRACTION, Operator.MULTIPLICATION, Operator.DIVISION];
 
@@ -303,6 +303,7 @@ export class CalculatorComponent {
       }
     };
     operation[operator]();
+    this.$editedFormInCalculator.next(this.data());
   }
 
   protected handleClickCustomOperation(operator: Operator, numberToApply: number): void {
@@ -324,6 +325,7 @@ export class CalculatorComponent {
     let result = operation[operator](this.entitySelected!.resultCurrent, numberToApply);
 
     this.applyResultsOptions(result);
+    this.$editedFormInCalculator.next(this.data());
   }
 
   private applyResultsOptions(result: number): void {
@@ -353,8 +355,6 @@ export class CalculatorComponent {
     }
 
     this.entitySelected!.resultCurrent = result;
-    // this.$editedFormInCalculator.next(true);
-    // Editar desde el servicio
   }
 
   private resetOperation(): void {
