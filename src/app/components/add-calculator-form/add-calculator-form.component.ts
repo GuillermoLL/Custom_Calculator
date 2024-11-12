@@ -18,6 +18,7 @@ import { CalculatorService } from '../../services';
     @let id = this.modalId();
     <app-custom-modal [modalId]="id"
       [backdropStatic]="true"
+      [scroll]="true"
       [headerText]="this.headerText"
       [headerTextClass]="edit ? 'text-warning' : 'text-primary'"
       [acceptText]="this.submitText"
@@ -36,8 +37,7 @@ import { CalculatorService } from '../../services';
           </div>
           <!-- Entity -->
           <div class="accordion accordion-flush" id="accordionEntities" formArrayName="entity">
-          @for(entity of entityList.value; track entity.id){
-            @let entityIndex = $index;
+          @for(entity of entityList.value; track entity.id; let entityIndex = $index){
             <div class="accordion-item position-relative" [formGroupName]="entityIndex">
               <!-- Accordion header -->
               <h2 class="accordion-header">
@@ -67,7 +67,7 @@ import { CalculatorService } from '../../services';
                 </button>
               </h2>
               <!-- Accordion Body -->
-              <div [id]="'collapse'+entityIndex" class="accordion-collapse collapse" data-bs-parent="accordionEntities" >
+              <div [id]="'collapse'+entityIndex" class="accordion-collapse collapse" data-bs-parent="#accordionEntities" >
                 <div class="accordion-body">
                   <div class="mb-3 d-flex justify-content-center gap-2">
                     <!-- Icons List -->

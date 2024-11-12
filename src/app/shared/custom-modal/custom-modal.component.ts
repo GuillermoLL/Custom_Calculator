@@ -13,7 +13,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
       [attr.data-bs-keyboard]="!backdropStatic()"
       [attr.aria-labelledby]="id + 'Label'" aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog {{scroll() ? 'modal-dialog-scrollable' : ''}}">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" [className]="this.headerTextClass()" [id]="id + 'Label'">{{this.headerText()}}</h5>
@@ -43,21 +43,29 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 export class CustomModalComponent implements OnInit {
   modalId = input.required<string>();
 
+  // header config
   headerText = input.required<string>();
   headerTextClass = input<string>();
 
+  // acceptButton config
   acceptButtonClass = input<string>('btn-primary');
   acceptText = input<string>('Guardar');
   acceptEvent = output<number>();
   $acceptButtonDisabled = input<BehaviorSubject<boolean>>();
   protected acceptButtonDisabled = false;
 
+  // cancelButton config
   cancelButtonClass = input<string>('btn-secondary');
   cancelText = input<string>('Cancelar');
   cancelEvent = output<number>();
 
+  // General options
   // If true, when click out of modal then close
   backdropStatic = input<boolean>(false);
+
+  // If true, the modal can do scroll
+  scroll = input<boolean>(false);
+
 
   ngOnInit(): void {
     this.$acceptButtonDisabled()?.subscribe((elm) => this.acceptButtonDisabled = elm);
