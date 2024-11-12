@@ -168,9 +168,11 @@ import { CalculatorService } from '../../services';
                           </div>
                           <!-- Number To Apply -->
                           <input id="numberToApply" class="form-control text-center" type="number" step="0" min="0"
-                            formControlName="numberToApply" placeholder="Número">
+                            formControlName="numberToApply" placeholder="Número"
+                            [value]="customOperation.numberToApply">
                           <!-- Color picker -->
-                          <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="operationsColorPicker" title="Lista de colores">
+                          <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="operationsColorPicker" title="Lista de colores"
+                            [value]="customOperation.color">
                           <!-- Delete Custom Operation -->
                           <button type="button" class="btn btn-danger position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
                             (click)="deleteCustomOperation(entityIndex, customOperationsIndex)" style="z-index: 10;">
@@ -388,6 +390,8 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
   protected deleteCustomOperation(entityIndex: number, customOperationIndex: number): void {
     const customOperations = this.entityList.at(entityIndex)?.get('customOperations') as FormArray;
     customOperations.removeAt(customOperationIndex);
+    console.warn(customOperations.value);
+
   }
 
   // **********************************************
