@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, input, OnDestroy, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { Calculator, Color, Icon, Operation, Operator } from '../calculator';
 import { CustomModalComponent } from '../../shared';
@@ -49,14 +49,10 @@ import { CalculatorService } from '../../services';
                       <i class="bi {{'bi-'+ entity.icon}}"></i>
                       {{entity.name ? entity.name  : 'Nuevo elemento' }}
                     </div>
-                    @if(entity.resultDefault >= 0){
-                      <div class="pe-3">
-                        <span [style.color]="'white'">{{ entity.resultCurrent }} / </span>
-                        <span>
-                          {{ entity.resultDefault }}</span
-                        >
-                      </div>
-                    }
+                    <div class="pe-3">
+                      <span [style.color]="'white'">{{ entity.resultCurrent }} / </span>
+                      <span>{{ entity.resultDefault }}</span>
+                    </div>
                     <!-- Delete entity -->
                     <span type="button" class="position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger mb-1"
                       style="margin: 26px -30px; z-index: 12;"
@@ -90,10 +86,12 @@ import { CalculatorService } from '../../services';
                   <div class="input-group mb-3">
                     <!-- Input Name -->
                     <input type="text" formControlName="name" placeholder="Nombre"
-                      class="form-control" style="color: {{entity.color}};">
+                      class="form-control" style="color: {{entity.color}};"
+                      (focusin)="handleFocusIn(entityIndex, 'name')" (focusout)="handleFocusOut(entityIndex, 'name')">
                     <!-- Result Default -->
                     <input id="resultDefault" class="form-control" type="number" min="0" step="0" style="color: {{entity.color}}"
-                        formControlName="resultDefault" placeholder="Resultado">
+                        formControlName="resultDefault" placeholder="Resultado"
+                        (focusin)="handleFocusIn(entityIndex, 'resultDefault')" (focusout)="handleFocusOut(entityIndex, 'resultDefault')">
                   </div>
                   <fieldset formGroupName="options" class="mb-3">
                     <legend>Opciones</legend>
@@ -150,8 +148,8 @@ import { CalculatorService } from '../../services';
                   <fieldset formArrayName="customOperations">
                     <legend>Operaciones personalizadas</legend>
                     <div class="row row-cols-3 justify-content-center gap-3 mx-1 mb-3 ">
-                      @for(customOperation of entity.customOperations; track customOperationsIndex; let customOperationsIndex = $index){
-                        <div [formGroupName]="customOperationsIndex" class="container-customOperations input-group position-relative p-0 col">
+                      @for(customOperation of entity.customOperations; track customOperationIndex; let customOperationIndex = $index){
+                        <div [formGroupName]="customOperationIndex" class="container-customOperations input-group position-relative p-0 col">
                           <!-- Operators List -->
                           <div class="dropdown border border-1 rounded-start-3">
                             <button type="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -162,20 +160,21 @@ import { CalculatorService } from '../../services';
                             </button>
                             <ul class="dropdown-menu">
                               @for(operator of Operators; track $index){
-                                <li><i class="dropdown-item bi bi-{{operator}}-lg" (click)="setCustomOperationsOperator(entityIndex, customOperationsIndex, operator)"></i></li>
+                                <li><i class="dropdown-item bi bi-{{operator}}-lg" (click)="setCustomOperationsOperator(entityIndex, customOperationIndex, operator)"></i></li>
                               }
                             </ul>
                           </div>
                           <!-- Number To Apply -->
                           <input id="numberToApply" class="form-control text-center" type="number" step="0" min="0"
                             formControlName="numberToApply" placeholder="Número"
+                            (focusin)="handleFocusIn(entityIndex, 'numberToApply', customOperationIndex)" (focusout)="handleFocusOut(entityIndex, 'numberToApply', customOperationIndex)"
                             [value]="customOperation.numberToApply">
                           <!-- Color picker -->
                           <input type="color" class="form-control p-0 border-end-1 rounded-end" formControlName="color" id="operationsColorPicker" title="Lista de colores"
                             [value]="customOperation.color">
                           <!-- Delete Custom Operation -->
                           <button type="button" class="btn btn-danger position-absolute top-0 start-100 translate-middle badge rounded-pill border-0 bg-danger"
-                            (click)="deleteCustomOperation(entityIndex, customOperationsIndex)" style="z-index: 10;">
+                            (click)="deleteCustomOperation(entityIndex, customOperationIndex)" style="z-index: 10;">
                             <i class="bi bi-{{Operator.MULTIPLICATION}}-lg"  style="margin: -3px"></i>
                           </button>
                         </div>
@@ -218,6 +217,8 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
   private fb = new FormBuilder();
   protected myForm?: FormGroup;
   private $myFormChangeSubscribe!: Subscription;
+  private focusValue: any;
+
 
   // Event Emiters
   disableAcceptButton = new BehaviorSubject<boolean>(false);
@@ -291,7 +292,7 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
     this.data()?.entity.forEach((entity) => {
       const entityToForm = this.fb.group({
         id: this.fb.control(entity.id, [Validators.required]),
-        name: this.fb.control(entity.name, [Validators.required]),
+        name: this.fb.control(entity.name),
         icon: this.fb.control(entity.icon ? entity.icon : null),
         color: this.fb.control(entity.color, [Validators.required]),
         resultDefault: this.fb.control(entity.resultDefault, [Validators.required]),
@@ -358,7 +359,7 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
         resultDefault: this.fb.control(0, [Validators.required]),
         resultCurrent: this.fb.control(0, [Validators.required]),
         options: this.fb.group({
-          numberOverflow: this.fb.control(false, [Validators.required]),
+          numberOverflow: this.fb.control(true, [Validators.required]),
           numberDecimals: this.fb.control(false, [Validators.required]),
           clearOperationWhenOperate: this.fb.control(true, [Validators.required]),
           clearOperationWhenSelectOperator: this.fb.control(false, [Validators.required]),
@@ -391,7 +392,29 @@ export class AddCalculatorFormComponent implements OnInit, OnDestroy {
     const customOperations = this.entityList.at(entityIndex)?.get('customOperations') as FormArray;
     customOperations.removeAt(customOperationIndex);
     console.warn(customOperations.value);
+  }
 
+  protected handleFocusIn(entityIndex: number, input: string, customOperationIndex?: number) {
+    const control = customOperationIndex != undefined
+      ? (this.entityList.at(entityIndex).get('customOperations') as FormArray).at(customOperationIndex).get(input)
+      : this.entityList.at(entityIndex).get(input) as FormControl;
+
+    if (!control?.dirty) {
+      this.focusValue = control?.value
+      control?.setValue(null);
+    }
+  }
+
+  protected handleFocusOut(entityIndex: number, input: string, customOperationIndex?: number) {
+    const control = customOperationIndex != undefined
+      ? (this.entityList.at(entityIndex).get('customOperations') as FormArray).at(customOperationIndex).get(input)
+      : this.entityList.at(entityIndex).get(input) as FormControl;
+
+    if (control?.dirty) {
+      this.focusValue = control.value;
+    } else {
+      control?.setValue(this.focusValue);
+    }
   }
 
   // **********************************************
