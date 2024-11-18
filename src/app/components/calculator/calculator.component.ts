@@ -57,9 +57,26 @@ import { Subject } from 'rxjs';
           </li>
           }
         </ul>
-
-
         @if( entitySelected ){
+        <!-- ************************************* -->
+        <!-- Customs keys ************************ -->
+        <!-- ************************************* -->
+        @if(entitySelected.customOperations.length){
+          <div class="custom-key-group mt-3">
+            @for (customOperation of entitySelected.customOperations; track $index) {
+            <button
+              type="button"
+              class=" btn btn-primary custom-key"
+              [style.background-color]="customOperation.color"
+              [style.border-color]="customOperation.color"
+              (click)="handleClickCustomOperation(customOperation.operator, customOperation.numberToApply)"
+            >
+            <i [class]="['bi', 'bi-'+ customOperation.operator]"></i> {{ customOperation.numberToApply }}
+            </button>
+            }
+          </div>
+        }
+
         <!-- ************************************ -->
         <!-- * Operation ************************ -->
         <!-- ************************************ -->
@@ -157,22 +174,6 @@ import { Subject } from 'rxjs';
           >
           {{ this.getOperator.EQUAL }}
           </button>
-          <!-- Customs keys -->
-          @if(entitySelected.customOperations.length){
-            <div class="custom-key-group mt-3">
-              @for (customOperation of entitySelected.customOperations; track $index) {
-              <button
-                type="button"
-                class=" btn btn-primary custom-key"
-                [style.background-color]="customOperation.color"
-                [style.border-color]="customOperation.color"
-                (click)="handleClickCustomOperation(customOperation.operator, customOperation.numberToApply)"
-              >
-              <i [class]="['bi', 'bi-'+ customOperation.operator]"></i> {{ customOperation.numberToApply }}
-              </button>
-              }
-            </div>
-          }
         </div>
         }
       </div>
